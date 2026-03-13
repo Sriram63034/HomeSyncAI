@@ -1,0 +1,17 @@
+.DS_Store
+
+# Python / Django
+Backend/db.sqlite3
+Backend/**/*.pyc
+Backend/**/__pycache__/
+Backend/.env
+Backend/out.txt
+
+# Node / Vite
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.env
+.vite/
+
+# Logs
+*.log
