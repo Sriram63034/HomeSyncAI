@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { AIScoreRing } from '../components/ui/AIScoreRing';
+import { fetchApi } from '../utils/api';
+import { Skeleton } from '../components/ui/Spinner';
 
 const MOCK_IMAGES = [
     'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200',
@@ -16,29 +18,72 @@ const MOCK_IMAGES = [
 ];
 
 const Details = () => {
-    useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
+    const [house, setHouse] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const [currentImage, setCurrentImage] = useState(0);
     const [isSaved, setIsSaved] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const formatPrice = (price: number) => `₹${(price / 10000000).toFixed(2)} Cr`;
+    useEffect(() => {
+        const fetchHouse = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchApi(`/houses/${id}/`);
+                setHouse(data);
+                setLoading(false);
+            } catch (err: any) {
+                console.error('Error fetching house details:', err);
+                setError(err.message || 'Failed to load house details');
+                setLoading(false);
+            }
+        };
 
-    // Mock Data
-    const house = {
-        title: 'Modern Luxury Villa in quiet neighborhood',
-        location: 'Indira Nagar, Bengaluru',
-        price: 35000000,
-        estimatedPrice: 38000000,
-        score: 92,
-        beds: 4,
-        baths: 4,
-        area: 3200,
-        desc: 'This stunning contemporary villa offers luxurious living with high-end finishes throughout. Featuring an open-concept floor plan, state-of-the-art kitchen, and a private landscaped backyard with a heated pool.',
-        amenities: ['2 Car Parking', '24/7 Security', 'Private Pool', 'Gym Access', 'Smart Home Integration']
+        if (id) fetchHouse();
+    }, [id]);
+
+    const formatPrice = (price: number) => {
+        if (!price) return 'N/A';
+        if (price >= 10000000) return `₹${(price / 10000000).toFixed(2)} Cr`;
+        return `₹${(price / 100000).toFixed(2)} L`;
     };
 
-    const nextImage = () => setCurrentImage(curr => (curr + 1) % MOCK_IMAGES.length);
-    const prevImage = () => setCurrentImage(curr => curr === 0 ? MOCK_IMAGES.length - 1 : curr - 1);
+    const nextImage = () => {
+        const imagesCount = house?.image_url ? 1 : MOCK_IMAGES.length;
+        setCurrentImage(curr => (curr + 1) % imagesCount);
+    };
+    const prevImage = () => {
+        const imagesCount = house?.image_url ? 1 : MOCK_IMAGES.length;
+        setCurrentImage(curr => curr === 0 ? imagesCount - 1 : curr - 1);
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-slate-50 pt-24 px-4 flex flex-col items-center">
+                <Skeleton className="h-[60vh] w-full max-w-7xl rounded-3xl mb-8" />
+                <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 space-y-4">
+                        <Skeleton className="h-12 w-3/4" />
+                        <Skeleton className="h-6 w-1/2" />
+                        <Skeleton className="h-32 w-full" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !house) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+                <div className="text-center bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Oops!</h2>
+                    <p className="text-slate-500 mb-6">{error || 'House not found'}</p>
+                    <Button onClick={() => navigate('/results')}>Back to Results</Button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-slate-50 pb-24">
@@ -67,7 +112,7 @@ const Details = () => {
                 <AnimatePresence initial={false} mode="wait">
                     <motion.img
                         key={currentImage}
-                        src={MOCK_IMAGES[currentImage]}
+                        src={house.image_url || MOCK_IMAGES[currentImage]}
                         initial={{ opacity: 0, scale: 1.05 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
@@ -77,23 +122,29 @@ const Details = () => {
                 </AnimatePresence>
 
                 {/* Carousel Controls */}
-                <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-md p-3 rounded-full text-white transition-colors opacity-0 group-hover:opacity-100">
-                    <ChevronLeft size={24} />
-                </button>
-                <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-md p-3 rounded-full text-white transition-colors opacity-0 group-hover:opacity-100">
-                    <ChevronRight size={24} />
-                </button>
+                {(house.image_url ? 1 : MOCK_IMAGES.length) > 1 && (
+                    <>
+                        <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-md p-3 rounded-full text-white transition-colors opacity-0 group-hover:opacity-100">
+                            <ChevronLeft size={24} />
+                        </button>
+                        <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-md p-3 rounded-full text-white transition-colors opacity-0 group-hover:opacity-100">
+                            <ChevronRight size={24} />
+                        </button>
+                    </>
+                )}
 
                 {/* Thumbnails */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                    {MOCK_IMAGES.map((_, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => setCurrentImage(idx)}
-                            className={`w-2 h-2 rounded-full transition-all ${currentImage === idx ? 'w-8 bg-white' : 'bg-white/50'}`}
-                        />
-                    ))}
-                </div>
+                {(house.image_url ? 1 : MOCK_IMAGES.length) > 1 && (
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                        {(house.image_url ? [house.image_url] : MOCK_IMAGES).map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCurrentImage(idx)}
+                                className={`w-2 h-2 rounded-full transition-all ${currentImage === idx ? 'w-8 bg-white' : 'bg-white/50'}`}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Main Content */}
@@ -104,25 +155,25 @@ const Details = () => {
                     <div>
                         <div className="flex flex-wrap items-center gap-3 mb-3 text-sm font-medium">
                             <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full">For Sale</span>
-                            <span className="flex items-center gap-1 text-slate-500"><MapPin size={16} /> {house.location}</span>
+                            <span className="flex items-center gap-1 text-slate-500"><MapPin size={16} /> {house.area}, {house.city}</span>
                         </div>
                         <h1 className="text-3xl md:text-5xl font-bold text-slate-900 mb-4">{house.title}</h1>
                         <div className="flex gap-6 text-slate-600 border-b border-slate-200 pb-6">
-                            <span className="flex items-center gap-2"><Bed className="text-primary-500" /> <strong>{house.beds}</strong> Beds</span>
-                            <span className="flex items-center gap-2"><Bath className="text-primary-500" /> <strong>{house.baths}</strong> Baths</span>
-                            <span className="flex items-center gap-2"><Square className="text-primary-500" /> <strong>{house.area}</strong> sqft</span>
+                            <span className="flex items-center gap-2"><Bed className="text-primary-500" /> <strong>{house.bedrooms}</strong> Beds</span>
+                            <span className="flex items-center gap-2"><Bath className="text-primary-500" /> <strong>{house.bathrooms}</strong> Baths</span>
+                            <span className="flex items-center gap-2"><Square className="text-primary-500" /> <strong>{house.square_feet}</strong> sqft</span>
                         </div>
                     </div>
 
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900 mb-4">About this home</h2>
-                        <p className="text-slate-600 leading-relaxed text-lg">{house.desc}</p>
+                        <p className="text-slate-600 leading-relaxed text-lg">{house.description || 'No description available for this property.'}</p>
                     </div>
 
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900 mb-4">Amenities</h2>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            {house.amenities.map((am, i) => (
+                            {(house.amenities || []).map((am: string, i: number) => (
                                 <div key={i} className="flex items-center gap-2 text-slate-700 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
                                     <div className="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center">
                                         {i % 2 === 0 ? <Car size={16} /> : <Waves size={16} />}
@@ -153,17 +204,19 @@ const Details = () => {
                             <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Asking Price</p>
                             <h2 className="text-4xl font-bold text-slate-900 mb-6">{formatPrice(house.price)}</h2>
 
-                            <div className="bg-green-50 rounded-2xl p-4 mb-6 border border-green-100 flex items-start gap-4">
-                                <div className="mt-1">
-                                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">✓</div>
+                            {house.price < 40000000 && (
+                                <div className="bg-green-50 rounded-2xl p-4 mb-6 border border-green-100 flex items-start gap-4">
+                                    <div className="mt-1">
+                                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">✓</div>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold text-green-800">Great Deal!</h4>
+                                        <p className="text-green-700 text-sm mt-1">
+                                            This property is priced competitively for the {house.area} area.
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 className="font-semibold text-green-800">Great Deal!</h4>
-                                    <p className="text-green-700 text-sm mt-1">
-                                        Priced roughly {formatPrice(Math.abs(house.price - house.estimatedPrice))} below our AI market estimate.
-                                    </p>
-                                </div>
-                            </div>
+                            )}
 
                             <Button size="lg" className="w-full text-lg mb-3" magnetic>Contact Agent</Button>
                             <Button size="lg" variant="outline" className="w-full">Schedule Tour</Button>
@@ -178,7 +231,7 @@ const Details = () => {
                             </h3>
 
                             <div className="flex flex-col items-center justify-center relative z-10 mb-6">
-                                <AIScoreRing score={house.score} size={140} />
+                                <AIScoreRing score={house.score || 85} size={140} />
                             </div>
 
                             <div className="space-y-3 relative z-10 text-sm">

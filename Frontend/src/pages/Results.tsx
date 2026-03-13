@@ -4,60 +4,81 @@ import { Filter, Map as MapIcon, ChevronDown, CheckCircle2, Heart } from 'lucide
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { AIScoreRing } from '../components/ui/AIScoreRing';
-import { Skeleton, LoadingDots } from '../components/ui/Spinner';
+import { Skeleton } from '../components/ui/Spinner';
 import { Link } from 'react-router-dom';
-
-// MOCK DATA
-const generateMockHouses = (count: number, startId = 1) => Array.from({ length: count }).map((_, i) => ({
-    id: startId + i,
-    title: [
-        'Modern Luxury Villa in quiet neighborhood',
-        'Charming Apartment with City Views',
-        'Spacious Family Home near Top Schools',
-        'Contemporary Townhouse with Private Garden',
-        'Sky High Penthouse with Panoramic Views'
-    ][Math.floor(Math.random() * 5)],
-    price: Math.floor(Math.random() * 30000000) + 5000000,
-    score: Math.floor(Math.random() * 40) + 60,
-    beds: Math.floor(Math.random() * 4) + 1,
-    baths: Math.floor(Math.random() * 3) + 1,
-    area: Math.floor(Math.random() * 2000) + 800,
-    location: ['Indira Nagar', 'Koramangala', 'Whitefield', 'HSR Layout', 'Jayanagar'][Math.floor(Math.random() * 5)],
-    image: `https://images.unsplash.com/photo-${[
-        '1613490493576-7f4c9c2794fb',
-        '1600596542815-ffad4c1539a9',
-        '1512917774080-9991f1c4c750',
-        '1600607686527-6fb886090705'
-    ][Math.floor(Math.random() * 4)]}?w=800&q=80`,
-    isSaved: false,
-}));
+import { fetchApi } from '../utils/api';
 
 const Results = () => {
     const [loading, setLoading] = useState(true);
     const [houses, setHouses] = useState<any[]>([]);
-    const [, setPage] = useState(1);
-    const [loadingMore, setLoadingMore] = useState(false);
     const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
+    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        // Initial load
-        setTimeout(() => {
-            setHouses(generateMockHouses(6, 1));
+    const fetchRecommendations = async () => {
+        try {
+            setLoading(true);
+            const [data, savedData] = await Promise.all([
+                fetchApi('/houses/recommendations/'),
+                fetchApi('/saved/')
+            ]);
+            
+            const savedIds = new Set(savedData.map((item: any) => item.house));
+            
+            // Map the API response to fit the frontend structure
+            const mappedHouses = data.map((item: any) => ({
+                id: item.house_details.id,
+                title: item.house_details.title,
+                price: parseFloat(item.house_details.price),
+                score: item.match_score,
+                beds: item.house_details.bedrooms,
+                baths: item.house_details.bathrooms,
+                area: item.house_details.square_feet,
+                location: `${item.house_details.area}, ${item.house_details.city}`,
+                image: item.image_url || item.house_details.image_url || '/default-house.jpg',
+                isSaved: savedIds.has(item.house_details.id),
+                details: item.house_details
+            }));
+            setHouses(mappedHouses);
+        } catch (err: any) {
+            console.error('Error fetching recommendations:', err);
+            setError(err.message || 'Failed to load recommendations');
+        } finally {
             setLoading(false);
-        }, 1500);
-    }, []);
-
-    const loadMore = () => {
-        setLoadingMore(true);
-        setTimeout(() => {
-            setHouses(prev => [...prev, ...generateMockHouses(6, prev.length + 1)]);
-            setPage(p => p + 1);
-            setLoadingMore(false);
-        }, 1000);
+        }
     };
 
-    const toggleSave = (id: number) => {
-        setHouses(prev => prev.map(h => h.id === id ? { ...h, isSaved: !h.isSaved } : h));
+    useEffect(() => {
+        fetchRecommendations();
+    }, []);
+
+    const toggleSave = async (id: number) => {
+        const house = houses.find(h => h.id === id);
+        if (!house) return;
+
+        const isCurrentlySaved = house.isSaved;
+        
+        // Optimistic UI update
+        setHouses(prev => prev.map(h => h.id === id ? { ...h, isSaved: !isCurrentlySaved } : h));
+
+        try {
+            if (isCurrentlySaved) {
+                // Unsave (DELETE)
+                await fetchApi('/saved/add/', {
+                    method: 'DELETE',
+                    body: JSON.stringify({ house_id: id })
+                });
+            } else {
+                // Save (POST)
+                await fetchApi('/saved/add/', {
+                    method: 'POST',
+                    body: JSON.stringify({ house_id: id })
+                });
+            }
+        } catch (err) {
+            console.error('Error toggling save:', err);
+            // Rollback on error
+            setHouses(prev => prev.map(h => h.id === id ? { ...h, isSaved: isCurrentlySaved } : h));
+        }
     };
 
     const formatPrice = (price: number) => {
@@ -121,6 +142,20 @@ const Results = () => {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                        <div className="text-red-500 mb-4 text-lg font-semibold">Error Loading Recommendations</div>
+                        <p className="text-slate-500 mb-8">{error}</p>
+                        <Button onClick={fetchRecommendations} variant="primary">Try Again</Button>
+                    </div>
+                ) : houses.length === 0 ? (
+                    <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                        <div className="text-slate-400 mb-4 text-lg font-semibold">No Recommendations Found</div>
+                        <p className="text-slate-500 mb-8">Try adjusting your preferences to find more matches.</p>
+                        <Link to="/wizard">
+                            <Button variant="primary">Go to Wizard</Button>
+                        </Link>
                     </div>
                 ) : viewMode === 'map' ? (
                     <div className="h-[600px] w-full bg-slate-200 rounded-2xl flex items-center justify-center border border-slate-300">
@@ -198,22 +233,7 @@ const Results = () => {
                             </AnimatePresence>
                         </div>
 
-                        {/* Load More Trigger */}
-                        <div className="mt-12 flex justify-center">
-                            <Button
-                                onClick={loadMore}
-                                disabled={loadingMore}
-                                variant="secondary"
-                                size="lg"
-                                className="w-full max-w-xs"
-                            >
-                                {loadingMore ? (
-                                    <span className="flex items-center gap-2">Analyzing <LoadingDots /></span>
-                                ) : (
-                                    'Load More Listings'
-                                )}
-                            </Button>
-                        </div>
+                        {/* Load More Trigger - Removed as pagination is not implemented */}
                     </>
                 )}
             </div>

@@ -12,6 +12,7 @@ import { MapContainer, TileLayer, Marker, Circle, useMapEvents } from 'react-lea
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useAuth } from '../context/AuthContext';
+import { fetchApi } from '../utils/api';
 
 // Fix Leaflet icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -335,13 +336,40 @@ const Wizard = () => {
         localStorage.setItem('wizard_data', JSON.stringify(data));
     }, [data]);
 
+    const handleSubmit = async () => {
+        try {
+            const payload = {
+                buyer_type: data.buyerType,
+                min_budget: data.budget[0],
+                max_budget: data.budget[1],
+                city: 'Bangalore', // Default for now
+                latitude: data.location.lat,
+                longitude: data.location.lng,
+                search_radius: data.location.radiusBase,
+                property_type: data.houseTypes,
+                bedrooms: data.bedrooms,
+                amenities: data.amenities,
+                lifestyle: data.lifestyle
+            };
+            await fetchApi('/preferences/', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            navigate('/results');
+        } catch (err) {
+            console.error('Error saving preferences:', err);
+            // Navigate anyway to show existing results if any, or a fallback
+            navigate('/results');
+        }
+    };
+
     const paginate = (newDirection: number) => {
         const newPage = page + newDirection;
         if (newPage >= 0 && newPage < TOTAL_STEPS) {
             setPage([newPage, newDirection]);
         } else if (newPage === TOTAL_STEPS) {
             // Submit & navigate to results
-            navigate('/results');
+            handleSubmit();
         }
     };
 

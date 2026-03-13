@@ -24,5 +24,5 @@ urlpatterns = [
     path("api/houses/recommendations/", include("recommendations.urls")),
     path("api/houses/", include("houses.urls")),
     path("api/preferences/", include("preferences.urls")),
-    path("api/houses/", include("saved.urls")),
+    path("api/saved/", include("saved.urls")),
 ]

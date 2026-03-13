@@ -20,17 +20,27 @@ class SavedHouseListCreateView(generics.ListCreateAPIView):
 class SaveHouseView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, house_id):
+    def post(self, request):
+        house_id = request.data.get("house_id")
+        if not house_id:
+            return Response({"error": "house_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
         house = get_object_or_404(House, id=house_id)
         saved_house, created = SavedHouse.objects.get_or_create(user=request.user, house=house)
-        if created:
-            return Response({"status": "House saved successfully", "id": saved_house.id}, status=status.HTTP_201_CREATED)
-        return Response({"status": "House already saved"}, status=status.HTTP_200_OK)
         
-    def delete(self, request, house_id):
+        if created:
+            return Response({"message": "House saved", "id": saved_house.id}, status=status.HTTP_201_CREATED)
+        return Response({"message": "House already saved"}, status=status.HTTP_200_OK)
+        
+    def delete(self, request):
+        # Allow passing house_id in body for delete as well, or keep it flexible
+        house_id = request.data.get("house_id")
+        if not house_id:
+             return Response({"error": "house_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+             
         house = get_object_or_404(House, id=house_id)
         SavedHouse.objects.filter(user=request.user, house=house).delete()
-        return Response({"status": "House unsaved successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "House unsaved successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 class CompareHousesView(APIView):
     permission_classes = [permissions.IsAuthenticated]

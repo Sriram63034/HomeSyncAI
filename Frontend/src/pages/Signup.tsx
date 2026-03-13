@@ -48,13 +48,8 @@ const Signup = () => {
                 })
             });
 
-            // Auto log in after successful signup
-            const loginData = await fetchApi('/auth/login/', {
-                method: 'POST',
-                body: JSON.stringify({ email, password }),
-            });
-            await login(loginData.access, loginData.refresh);
-            navigate('/home');
+            // Redirect to login page - removed auto login
+            navigate('/login');
         } catch (err: any) {
             console.error(err);
             setError(err.message || 'Signup failed. Please try again.');

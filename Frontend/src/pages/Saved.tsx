@@ -1,43 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { HeartOff, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-
-// Mock Data reusing structure from Results but fixed
-const MOCK_SAVED = [
-    {
-        id: 1,
-        title: 'Modern Luxury Villa in quiet neighborhood',
-        price: 35000000,
-        score: 92,
-        beds: 4,
-        baths: 4,
-        area: 3200,
-        location: 'Indira Nagar',
-        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80',
-    },
-    {
-        id: 4,
-        title: 'Contemporary Townhouse with Private Garden',
-        price: 18000000,
-        score: 85,
-        beds: 3,
-        baths: 2,
-        area: 1800,
-        location: 'HSR Layout',
-        image: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?w=400&q=80',
-    }
-];
+import { fetchApi } from '../utils/api';
+import { Skeleton } from '../components/ui/Spinner';
 
 const Saved = () => {
-    const [savedHouses, setSavedHouses] = React.useState(MOCK_SAVED);
+    const [savedHouses, setSavedHouses] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const formatPrice = (price: number) => `₹${(price / 10000000).toFixed(2)} Cr`;
+    const fetchSavedHouses = async () => {
+        try {
+            setLoading(true);
+            const data = await fetchApi('/saved/');
+            // Map backend data to frontend structure
+            const mappedData = data.map((item: any) => ({
+                id: item.house_details.id,
+                title: item.house_details.title,
+                price: parseFloat(item.house_details.price),
+                score: item.house_details.score || 85, // Fallback score
+                beds: item.house_details.bedrooms,
+                baths: item.house_details.bathrooms,
+                area: item.house_details.square_feet,
+                location: `${item.house_details.area}, ${item.house_details.city}`,
+                image: item.house_details.image_url || '/default-house.jpg',
+            }));
+            setSavedHouses(mappedData);
+            setError(null);
+        } catch (err: any) {
+            console.error('Error fetching saved houses:', err);
+            setError(err.message || 'Failed to load saved houses');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const handleRemove = (id: number) => {
+    useEffect(() => {
+        fetchSavedHouses();
+    }, []);
+
+    const formatPrice = (price: number) => {
+        if (!price) return 'N/A';
+        if (price >= 10000000) return `₹${(price / 10000000).toFixed(2)} Cr`;
+        return `₹${(price / 100000).toFixed(2)} L`;
+    };
+
+    const handleRemove = async (id: number) => {
+        // Optimistic UI update
+        const previousHouses = [...savedHouses];
         setSavedHouses(prev => prev.filter(h => h.id !== id));
+
+        try {
+            await fetchApi('/saved/add/', {
+                method: 'DELETE',
+                body: JSON.stringify({ house_id: id })
+            });
+        } catch (err) {
+            console.error('Error removing house:', err);
+            // Rollback on error
+            setSavedHouses(previousHouses);
+        }
     };
 
     return (
@@ -46,7 +71,23 @@ const Saved = () => {
                 <h1 className="text-3xl font-bold text-slate-900 mb-2">Saved Homes</h1>
                 <p className="text-slate-500 mb-8">Review and compare your favorite properties.</p>
 
-                {savedHouses.length === 0 ? (
+                {loading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 h-[400px] flex flex-col">
+                                <Skeleton className="h-48 w-full rounded-xl mb-4" />
+                                <Skeleton className="h-6 w-3/4 mb-2" />
+                                <Skeleton className="h-4 w-1/2" />
+                            </div>
+                        ))}
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-2xl mx-auto">
+                        <div className="text-red-500 mb-4 text-lg font-semibold">Error Loading Saved Homes</div>
+                        <p className="text-slate-500 mb-8">{error}</p>
+                        <Button onClick={fetchSavedHouses} variant="primary">Try Again</Button>
+                    </div>
+                ) : savedHouses.length === 0 ? (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
