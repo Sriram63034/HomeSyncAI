@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import SplashCursor from './components/SplashCursor';
 
 // Pages
 import Landing from './pages/Landing';
@@ -54,6 +55,14 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <Router>
+      <SplashCursor 
+        SIM_RESOLUTION={128}
+        DYE_RESOLUTION={1024}
+        SPLAT_RADIUS={0.25}
+        SPLAT_FORCE={5000}
+        COLOR_UPDATE_SPEED={8}
+        TRANSPARENT={true}
+      />
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-grow flex flex-col pt-14">

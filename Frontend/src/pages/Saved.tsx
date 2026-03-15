@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { HeartOff, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { ChromaGrid } from '../components/ui/ChromaGrid';
 import { fetchApi } from '../utils/api';
 import { Skeleton } from '../components/ui/Spinner';
 
@@ -62,13 +62,14 @@ const Saved = () => {
         return `₹${(price / 100000).toFixed(2)} L`;
     };
 
-    const handleRemove = async (id: number) => {
+    const handleRemove = async (id: number | string) => {
+        const numId = Number(id);
         // Optimistic UI update
-        setSavedHouses(prev => prev.filter(h => h.id !== id));
+        setSavedHouses(prev => prev.filter(h => h.id !== numId));
 
         try {
             let saved: number[] = JSON.parse(localStorage.getItem("savedProperties") || "[]");
-            saved = saved.filter(savedId => savedId !== id);
+            saved = saved.filter(savedId => savedId !== numId);
             localStorage.setItem("savedProperties", JSON.stringify(saved));
         } catch (err) {
             console.error('Error removing house from local storage:', err);
@@ -117,57 +118,25 @@ const Saved = () => {
                         </Link>
                     </motion.div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {savedHouses.map(house => (
-                            <motion.div
-                                key={house.id}
-                                layout
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                <Card tilt className="overflow-hidden flex flex-col h-full group">
-                                    <Link to={`/house/${house.id}`} className="block relative h-56 overflow-hidden">
-                                        <img
-                                            src={house.image}
-                                            alt={house.title}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                        />
-                                        <button
-                                            onClick={(e) => { e.preventDefault(); handleRemove(house.id); }}
-                                            className="absolute top-4 right-4 p-2 bg-red-50 backdrop-blur-sm rounded-full shadow-sm border border-red-100 text-red-500 hover:bg-red-100 transition-colors z-10"
-                                            title="Remove from saved"
-                                        >
-                                            <HeartOff size={18} />
-                                        </button>
-                                        <div className="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-lg text-white font-bold inline-block shadow-md">
-                                            {house.score}% AI Match
-                                        </div>
-                                    </Link>
-
-                                    <div className="p-5 flex flex-col flex-grow">
-                                        <div className="mb-4">
-                                            <h3 className="font-bold text-lg text-slate-900 line-clamp-1 group-hover:text-primary-600 transition-colors">
-                                                {house.title}
-                                            </h3>
-                                            <p className="text-slate-500 text-sm">{house.location}</p>
-                                        </div>
-
-                                        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
-                                            <span className="text-2xl font-bold tracking-tight text-slate-900">
-                                                {formatPrice(house.price)}
-                                            </span>
-                                            <Link to={`/house/${house.id}`}>
-                                                <Button variant="ghost" size="sm" className="font-semibold px-4 text-primary-600 hover:text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-full">
-                                                    View
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </Card>
-                            </motion.div>
-                        ))}
+                    <div className="w-full">
+                        <ChromaGrid 
+                            items={savedHouses.map(house => ({
+                                id: house.id,
+                                image: house.image,
+                                title: house.title,
+                                subtitle: house.location,
+                                priceStr: formatPrice(house.price),
+                                score: house.score,
+                                beds: house.beds,
+                                baths: house.baths,
+                                area: house.area,
+                                isSaved: true,
+                                tag: "Saved",
+                                borderColor: '#F43F5E',
+                                gradient: 'rgba(244, 63, 94, 0.15)'
+                            }))} 
+                            onToggleSave={handleRemove} 
+                        />
                     </div>
                 )}
             </div>
