@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     ArrowLeft, Heart, Share2, MapPin,
-    Bed, Bath, Square, Car, Waves, Map as MapIcon, ChevronRight, ChevronLeft
+    Bed, Bath, Square, Car, Waves, ChevronRight, ChevronLeft, CheckCircle
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { AIScoreRing } from '../components/ui/AIScoreRing';
@@ -11,6 +11,7 @@ import { fetchApi } from '../utils/api';
 import { Skeleton } from '../components/ui/Spinner';
 import { AgentContactModal } from '../components/AgentContactModal';
 import { ScheduleTourModal } from '../components/ScheduleTourModal';
+import { SharePropertyModal } from '../components/SharePropertyModal';
 
 const MOCK_IMAGES = [
     'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200',
@@ -29,6 +30,19 @@ const Details = () => {
     const [error, setError] = useState<string | null>(null);
     const [showAgentModal, setShowAgentModal] = useState(false);
     const [showTourModal, setShowTourModal] = useState(false);
+    const [showShareModal, setShowShareModal] = useState(false);
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+    // Initialize save state
+    useEffect(() => {
+        if (!house) return;
+        try {
+            const saved = JSON.parse(localStorage.getItem("savedProperties") || "[]");
+            setIsSaved(saved.includes(house.id));
+        } catch (err) {
+            console.error(err);
+        }
+    }, [house]);
 
     useEffect(() => {
         const fetchHouse = async () => {
@@ -51,6 +65,33 @@ const Details = () => {
         if (!price) return 'N/A';
         if (price >= 10000000) return `₹${(price / 10000000).toFixed(2)} Cr`;
         return `₹${(price / 100000).toFixed(2)} L`;
+    };
+
+    const toggleSave = () => {
+        if (!house) return;
+        
+        try {
+            let saved: number[] = JSON.parse(localStorage.getItem("savedProperties") || "[]");
+            
+            if (saved.includes(house.id)) {
+                saved = saved.filter(savedId => savedId !== house.id);
+                setIsSaved(false);
+                setToastMessage("Property removed from favorites");
+            } else {
+                saved.push(house.id);
+                setIsSaved(true);
+                setToastMessage("Property saved to favorites!");
+            }
+            
+            localStorage.setItem("savedProperties", JSON.stringify(saved));
+            
+            // Auto hide toast
+            setTimeout(() => {
+                setToastMessage(null);
+            }, 3000);
+        } catch (err) {
+            console.error("Failed to save property", err);
+        }
     };
 
     const nextImage = () => {
@@ -97,19 +138,37 @@ const Details = () => {
                     <ArrowLeft size={20} /> <span className="font-medium hidden sm:inline">Back to Results</span>
                 </button>
                 <div className="flex items-center gap-3">
-                    <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+                    <button 
+                        onClick={() => setShowShareModal(true)}
+                        className="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors"
+                    >
                         <Share2 size={20} />
                     </button>
                     <button
-                        onClick={() => setIsSaved(!isSaved)}
+                        onClick={toggleSave}
                         className={`p-2 rounded-full transition-colors flex items-center justify-center gap-2 px-4 shadow-sm border ${isSaved ? 'bg-red-50 border-red-200 text-red-500' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                             }`}
                     >
-                        <Heart size={18} className={isSaved ? 'fill-red-500 animate-pulse' : ''} />
+                        <Heart size={18} className={isSaved ? 'fill-red-500' : ''} />
                         {isSaved ? 'Saved' : 'Save'}
                     </button>
                 </div>
             </div>
+
+            {/* Toast Notification */}
+            <AnimatePresence>
+                {toastMessage && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-6 py-3 rounded-full shadow-lg font-medium flex items-center gap-2 border border-slate-700"
+                    >
+                        <CheckCircle size={18} className="text-green-400" />
+                        {toastMessage}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Hero Image Carousel */}
             <div className="relative h-[40vh] md:h-[60vh] w-full bg-slate-900 overflow-hidden group">
@@ -188,13 +247,18 @@ const Details = () => {
                         </div>
                     </div>
 
-                    {/* Map Section Mock */}
+                    {/* Map Section */}
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900 mb-4">Location</h2>
-                        <div className="h-[300px] w-full bg-slate-200 rounded-2xl flex items-center justify-center border border-slate-300">
-                            <p className="text-slate-500 font-medium flex items-center gap-2">
-                                <MapIcon /> Interactive Map View
-                            </p>
+                        <div className="w-full h-[350px] rounded-xl overflow-hidden shadow-md">
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                loading="lazy"
+                                allowFullScreen
+                                src={`https://www.google.com/maps?q=${house.city}&z=13&output=embed`}
+                            ></iframe>
                         </div>
                     </div>
                 </div>
@@ -274,6 +338,13 @@ const Details = () => {
                 onClose={() => setShowTourModal(false)}
                 propertyId={id || ''}
             />
+            {house && (
+                <SharePropertyModal
+                    isOpen={showShareModal}
+                    onClose={() => setShowShareModal(false)}
+                    property={house}
+                />
+            )}
         </div>
     );
 };

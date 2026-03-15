@@ -15,19 +15,33 @@ const Saved = () => {
     const fetchSavedHouses = async () => {
         try {
             setLoading(true);
-            const data = await fetchApi('/saved/');
-            // Map backend data to frontend structure
-            const mappedData = data.map((item: any) => ({
-                id: item.house_details.id,
-                title: item.house_details.title,
-                price: parseFloat(item.house_details.price),
-                score: item.house_details.score || 85, // Fallback score
-                beds: item.house_details.bedrooms,
-                baths: item.house_details.bathrooms,
-                area: item.house_details.square_feet,
-                location: `${item.house_details.area}, ${item.house_details.city}`,
-                image: item.house_details.image_url || '/default-house.jpg',
+            const savedIds: number[] = JSON.parse(localStorage.getItem("savedProperties") || "[]");
+            
+            if (savedIds.length === 0) {
+                setSavedHouses([]);
+                setLoading(false);
+                return;
+            }
+
+            // Fetch each saved property details
+            const promises = savedIds.map(id => fetchApi(`/houses/${id}/`).catch(() => null));
+            const results = await Promise.all(promises);
+            
+            // Filter out any failed requests (nulls) and map
+            const validData = results.filter(house => house !== null);
+            
+            const mappedData = validData.map((item: any) => ({
+                id: item.id,
+                title: item.title,
+                price: parseFloat(item.price),
+                score: item.score || 85, // Fallback score
+                beds: item.bedrooms,
+                baths: item.bathrooms,
+                area: item.square_feet,
+                location: `${item.area}, ${item.city}`,
+                image: item.image_url || '/default-house.jpg',
             }));
+            
             setSavedHouses(mappedData);
             setError(null);
         } catch (err: any) {
@@ -50,18 +64,14 @@ const Saved = () => {
 
     const handleRemove = async (id: number) => {
         // Optimistic UI update
-        const previousHouses = [...savedHouses];
         setSavedHouses(prev => prev.filter(h => h.id !== id));
 
         try {
-            await fetchApi('/saved/add/', {
-                method: 'DELETE',
-                body: JSON.stringify({ house_id: id })
-            });
+            let saved: number[] = JSON.parse(localStorage.getItem("savedProperties") || "[]");
+            saved = saved.filter(savedId => savedId !== id);
+            localStorage.setItem("savedProperties", JSON.stringify(saved));
         } catch (err) {
-            console.error('Error removing house:', err);
-            // Rollback on error
-            setSavedHouses(previousHouses);
+            console.error('Error removing house from local storage:', err);
         }
     };
 

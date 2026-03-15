@@ -15,6 +15,70 @@ const mapContainerStyle = {
     height: "600px",
 };
 
+const PropertyCardRenderer = ({ house, index, toggleSave, formatPrice }: { house: any, index: number, toggleSave: (id: number) => void, formatPrice: (price: number) => string }) => (
+    <motion.div
+        layout
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.3, delay: index % 6 * 0.1 }}
+    >
+        <Card tilt className="overflow-hidden flex flex-col h-full group">
+            <Link to={`/house/${house.id}`} className="block relative h-56 overflow-hidden">
+                <img
+                    src={house.image}
+                    alt={house.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-900 shadow-sm border border-white/50 flex items-center gap-1">
+                    <CheckCircle2 size={12} className="text-primary-600" /> AI Verified
+                </div>
+                {/* Interactive Save Button */}
+                <button
+                    onClick={(e) => { e.preventDefault(); toggleSave(house.id); }}
+                    className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-white/50 text-slate-400 hover:text-red-500 transition-colors z-10"
+                >
+                    <Heart
+                        size={18}
+                        className={house.isSaved ? 'fill-red-500 text-red-500 animate-pulse' : ''}
+                    />
+                </button>
+            </Link>
+
+            <div className="p-5 flex flex-col flex-grow">
+                <div className="flex justify-between items-start mb-3">
+                    <div>
+                        <h3 className="font-bold text-lg text-slate-900 line-clamp-1 group-hover:text-primary-600 transition-colors">
+                            {house.title}
+                        </h3>
+                        <p className="text-slate-500 text-sm">{house.location}</p>
+                    </div>
+                    <div className="-mt-12 -mr-2 bg-white rounded-full p-1 shadow-md z-10">
+                        <AIScoreRing score={house.score} size={50} />
+                    </div>
+                </div>
+
+                <div className="flex gap-4 text-sm text-slate-600 mb-6">
+                    <span><strong>{house.beds}</strong> Beds</span>
+                    <span><strong>{house.baths}</strong> Baths</span>
+                    <span><strong>{house.area}</strong> sqft</span>
+                </div>
+
+                <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
+                    <span className="text-2xl font-bold tracking-tight text-slate-900">
+                        {formatPrice(house.price)}
+                    </span>
+                    <Link to={`/house/${house.id}`}>
+                        <Button variant="outline" size="sm" className="font-semibold px-4 rounded-full border-slate-200">
+                            Details
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+        </Card>
+    </motion.div>
+);
+
 const Results = () => {
     const [loading, setLoading] = useState(true);
     const [houses, setHouses] = useState<any[]>([]);
@@ -137,6 +201,26 @@ const Results = () => {
         return `₹${(price / 100000).toFixed(2)} L`;
     };
 
+    // Calculate segments based on budget
+    const userBudgetStr = localStorage.getItem("userBudget");
+    const userBudget = userBudgetStr ? JSON.parse(userBudgetStr) : null;
+    let minBudget = userBudget?.min || 0;
+    let maxBudget = userBudget?.max || Infinity;
+
+    if (!userBudget && localStorage.getItem("wizard_data")) {
+        try {
+            const wiz = JSON.parse(localStorage.getItem("wizard_data") || "{}");
+            if (wiz.budget) {
+                minBudget = wiz.budget.min || 0;
+                maxBudget = wiz.budget.max || Infinity;
+            }
+        } catch (e) { }
+    }
+
+    const inBudget = houses.filter((p) => p.price >= minBudget && p.price <= maxBudget);
+    const belowBudget = houses.filter((p) => p.price < minBudget);
+    const aboveBudget = houses.filter((p) => p.price > maxBudget);
+
     return (
         <div className="min-h-screen bg-slate-50 pt-20 pb-24">
             {/* Sticky Filter Bar */}
@@ -214,72 +298,54 @@ const Results = () => {
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <AnimatePresence>
-                                {houses.map((house, index) => (
-                                    <motion.div
-                                        key={house.id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index % 6 * 0.1 }}
-                                        layout
-                                    >
-                                        <Card tilt className="overflow-hidden flex flex-col h-full group">
-                                            <Link to={`/house/${house.id}`} className="block relative h-56 overflow-hidden">
-                                                <img
-                                                    src={house.image}
-                                                    alt={house.title}
-                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                                />
-                                                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-900 shadow-sm border border-white/50 flex items-center gap-1">
-                                                    <CheckCircle2 size={12} className="text-primary-600" /> AI Verified
-                                                </div>
-                                                {/* Interactive Save Button */}
-                                                <button
-                                                    onClick={(e) => { e.preventDefault(); toggleSave(house.id); }}
-                                                    className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-white/50 text-slate-400 hover:text-red-500 transition-colors z-10"
-                                                >
-                                                    <Heart
-                                                        size={18}
-                                                        className={house.isSaved ? 'fill-red-500 text-red-500 animate-pulse' : ''}
-                                                    />
-                                                </button>
-                                            </Link>
+                        <div className="space-y-12 w-full">
+                            {/* In Budget Section */}
+                            <div>
+                                {inBudget.length > 0 ? (
+                                    <>
+                                        <h2 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-2">In Your Budget</h2>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                            <AnimatePresence>
+                                                {inBudget.map((house, index) => (
+                                                    <PropertyCardRenderer key={house.id} house={house} index={index} toggleSave={toggleSave} formatPrice={formatPrice} />
+                                                ))}
+                                            </AnimatePresence>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 text-center mb-8">
+                                        <p className="text-slate-600 font-medium">No properties found in your exact budget. Showing nearby price options.</p>
+                                    </div>
+                                )}
+                            </div>
 
-                                            <div className="p-5 flex flex-col flex-grow">
-                                                <div className="flex justify-between items-start mb-3">
-                                                    <div>
-                                                        <h3 className="font-bold text-lg text-slate-900 line-clamp-1 group-hover:text-primary-600 transition-colors">
-                                                            {house.title}
-                                                        </h3>
-                                                        <p className="text-slate-500 text-sm">{house.location}</p>
-                                                    </div>
-                                                    <div className="-mt-12 -mr-2 bg-white rounded-full p-1 shadow-md z-10">
-                                                        <AIScoreRing score={house.score} size={50} />
-                                                    </div>
-                                                </div>
+                            {/* Below Budget Section */}
+                            {belowBudget.length > 0 && (
+                                <div>
+                                    <h2 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-2">Below Budget Deals</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                        <AnimatePresence>
+                                            {belowBudget.slice(0, 4).map((house, index) => (
+                                                <PropertyCardRenderer key={house.id} house={house} index={index} toggleSave={toggleSave} formatPrice={formatPrice} />
+                                            ))}
+                                        </AnimatePresence>
+                                    </div>
+                                </div>
+                            )}
 
-                                                <div className="flex gap-4 text-sm text-slate-600 mb-6">
-                                                    <span><strong>{house.beds}</strong> Beds</span>
-                                                    <span><strong>{house.baths}</strong> Baths</span>
-                                                    <span><strong>{house.area}</strong> sqft</span>
-                                                </div>
-
-                                                <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
-                                                    <span className="text-2xl font-bold tracking-tight text-slate-900">
-                                                        {formatPrice(house.price)}
-                                                    </span>
-                                                    <Link to={`/house/${house.id}`}>
-                                                        <Button variant="outline" size="sm" className="font-semibold px-4 rounded-full border-slate-200">
-                                                            Details
-                                                        </Button>
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        </Card>
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
+                            {/* Above Budget Section */}
+                            {aboveBudget.length > 0 && (
+                                <div>
+                                    <h2 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-2">Slightly Above Budget Options</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                        <AnimatePresence>
+                                            {aboveBudget.slice(0, 4).map((house, index) => (
+                                                <PropertyCardRenderer key={house.id} house={house} index={index} toggleSave={toggleSave} formatPrice={formatPrice} />
+                                            ))}
+                                        </AnimatePresence>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Load More Trigger - Removed as pagination is not implemented */}
