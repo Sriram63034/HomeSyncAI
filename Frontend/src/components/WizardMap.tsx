@@ -1,16 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
-
-const MAJOR_CITIES = [
-  { city: "Bengaluru", lat: 12.9716, lng: 77.5946 },
-  { city: "Mumbai", lat: 19.0760, lng: 72.8777 },
-  { city: "Delhi", lat: 28.6139, lng: 77.2090 },
-  { city: "Hyderabad", lat: 17.3850, lng: 78.4867 },
-  { city: "Pune", lat: 18.5204, lng: 73.8567 },
-  { city: "Chennai", lat: 13.0827, lng: 80.2707 },
-  { city: "Ahmedabad", lat: 23.0225, lng: 72.5714 },
-  { city: "Kolkata", lat: 22.5726, lng: 88.3639 },
-];
+import { fetchApi } from "../utils/api";
 
 const mapContainerStyle = {
   width: "100%",
@@ -31,6 +21,19 @@ export default function WizardMap({ location, setLocation, googleMapsApiKey }: W
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [zoom, setZoom] = useState(5);
+  const [cities, setCities] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadCities = async () => {
+      try {
+        const data = await fetchApi('/houses/cities/');
+        setCities(data);
+      } catch (err) {
+        console.error("Failed to fetch cities", err);
+      }
+    };
+    loadCities();
+  }, []);
 
   const onLoad = useCallback(function callback(map: google.maps.Map) {
     setMap(map);
@@ -59,6 +62,13 @@ export default function WizardMap({ location, setLocation, googleMapsApiKey }: W
       city: cityData.city,
       radiusBase: location.radiusBase || 5
     });
+    // Ensure selectedCity propagates correctly for Result filters
+    localStorage.setItem("selectedCity", cityData.city);
+    localStorage.setItem("searchData", JSON.stringify({
+      city: cityData.city,
+      lat: cityData.lat,
+      lng: cityData.lng
+    }));
   };
 
   return isLoaded ? (
@@ -112,7 +122,7 @@ export default function WizardMap({ location, setLocation, googleMapsApiKey }: W
         )}
 
         {/* City Choice Markers (smaller) */}
-        {MAJOR_CITIES.map((cityData) => (
+        {cities.map((cityData) => (
           <Marker
             key={cityData.city}
             position={{ lat: cityData.lat, lng: cityData.lng }}

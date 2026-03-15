@@ -5,6 +5,35 @@ from rest_framework.response import Response
 from .models import House
 from .serializers import HouseSerializer
 from core.utils import StandardResultsSetPagination
+from django.db.models import F
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_cities(request):
+    """
+    Returns a distinct list of cities along with one of their valid coordinates.
+    """
+    # Group by city and get the first lat/lng
+    cities_data = House.objects.exclude(latitude__isnull=True).exclude(longitude__isnull=True).values(
+        'city'
+    ).distinct().annotate(
+        lat=F('latitude'),
+        lng=F('longitude')
+    )
+    
+    # Due to distinct() functioning weirdly with annotations in some DBs,
+    # we'll map to unique cities manually to guarantee uniqueness
+    unique_cities = {}
+    for entry in cities_data:
+        city_name = entry['city'].strip()
+        if city_name and city_name not in unique_cities:
+            unique_cities[city_name] = {
+                "city": city_name,
+                "lat": float(entry['lat']),
+                "lng": float(entry['lng'])
+            }
+            
+    return Response(list(unique_cities.values()))
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
