@@ -1,82 +1,106 @@
-
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React from 'react';
+import { motion, useTransform, useMotionValue, useSpring, useScroll } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles, Map, Target, ShieldCheck } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import FloatingHeroBackground from '../components/FloatingHeroBackground';
 
 const Landing = () => {
+    // Mouse Parallax Logic
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
     const { scrollY } = useScroll();
-    const y1 = useTransform(scrollY, [0, 1000], [0, 300]);
-    const y2 = useTransform(scrollY, [0, 1000], [0, -200]);
+    const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+    const heroScale = useTransform(scrollY, [0, 400], [1, 0.95]);
+
+    // 3-Layer Parallax Intensity Maps (Limited to sub-10px for cinematic feel)
+    const springConfig = { damping: 30, stiffness: 100 };
+    
+    // Layer 2 (Background image moves less)
+    const bgX = useSpring(useTransform(mouseX, [0, 2000], [8, -8]), springConfig);
+    const bgY = useSpring(useTransform(mouseY, [0, 1200], [8, -8]), springConfig);
+    
+    // Layer 3 (Glass Card moves opposite/more for depth - limited to 15px)
+    const cardX = useSpring(useTransform(mouseX, [0, 2000], [-15, 15]), springConfig);
+    const cardY = useSpring(useTransform(mouseY, [0, 1200], [-15, 15]), springConfig);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        mouseX.set(e.clientX);
+        mouseY.set(e.clientY);
+    };
 
     return (
-        <div className="bg-slate-50 min-h-screen overflow-hidden">
-            {/* Hero Section */}
-            <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-4 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center">
+        <div className="bg-white min-h-screen overflow-hidden relative" onMouseMove={handleMouseMove}>
+            {/* New Cinematic Background (Layers 1 & 2) */}
+            <motion.div style={{ opacity: heroOpacity }}>
+                <FloatingHeroBackground mouseX={bgX} mouseY={bgY} />
+            </motion.div>
 
-                {/* Parallax Background Elements */}
-                <motion.div style={{ y: y1 }} className="absolute top-20 -left-20 md:left-10 w-64 h-64 bg-primary-200/50 rounded-full blur-3xl pointer-events-none -z-10" />
-                <motion.div style={{ y: y2 }} className="absolute top-40 -right-20 md:right-10 w-96 h-96 bg-accent-200/40 rounded-full blur-3xl pointer-events-none -z-10" />
-
+            {/* Hero Section (Step 461.1) */}
+            <motion.section 
+                style={{ opacity: heroOpacity, scale: heroScale }}
+                className="relative h-[85vh] flex items-center justify-center px-4 lg:px-8 max-w-7xl mx-auto overflow-hidden"
+            >
+                {/* Layer 3: Glass Hero Card (Step 461.6) */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    style={{ x: cardX, y: cardY }}
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="max-w-4xl"
+                    className="relative z-30 max-w-2xl w-full"
                 >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 border border-primary-100 text-primary-700 font-medium text-sm mb-8 shadow-sm">
-                        <Sparkles size={16} /> AI-Powered Real Estate
-                    </div>
+                    <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-8 md:p-14 text-center">
+                        <motion.div 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-400/20 border border-white/10 text-primary-200 font-medium text-sm mb-8"
+                        >
+                            <Sparkles size={16} /> AI-Powered Real Estate
+                        </motion.div>
 
-                    <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight mb-8">
-                        Find Your Perfect Home <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-accent-600">
-                            with AI Precision
-                        </span>
-                    </h1>
+                        <motion.h1 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.4 }}
+                            className="text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6"
+                        >
+                            Find Your Perfect Home <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">
+                                with AI Precision
+                            </span>
+                        </motion.h1>
 
-                    <p className="text-lg md:text-2xl text-slate-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-                        Stop scrolling through endless listings. Tell our AI what matters to you, and we'll find your perfect match in seconds.
-                    </p>
+                        <motion.p 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.5 }}
+                            className="text-base md:text-lg text-slate-200 mb-10 max-w-xl mx-auto leading-relaxed"
+                        >
+                            Stop scrolling through endless listings. Tell our AI what matters to you, and we'll find your perfect match in seconds.
+                        </motion.p>
 
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <Link to="/wizard">
-                            <Button size="lg" className="w-full sm:w-auto text-lg h-14 px-8 rounded-full shadow-lg shadow-primary-500/30" magnetic>
-                                Find My Home <ArrowRight className="ml-2" />
-                            </Button>
-                        </Link>
-                        <Link to="/results">
-                            <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg h-14 px-8 rounded-full bg-white/50 backdrop-blur-sm border-slate-200" magnetic>
-                                Browse Listings
-                            </Button>
-                        </Link>
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.6 }}
+                            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                        >
+                            <Link to="/wizard">
+                                <Button size="lg" className="w-full sm:w-auto text-lg h-14 px-10 rounded-full shadow-lg shadow-primary-500/20 hover:scale-105 hover:shadow-blue-500/40 transition-all duration-300" magnetic>
+                                    Find My Home <ArrowRight className="ml-2" />
+                                </Button>
+                            </Link>
+                            <Link to="/results">
+                                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg h-14 px-10 rounded-full bg-white/5 border-white/20 text-white hover:bg-white/10 hover:scale-105 transition-all duration-300" magnetic>
+                                    Browse Listings
+                                </Button>
+                            </Link>
+                        </motion.div>
                     </div>
                 </motion.div>
-
-                {/* Hero Image / Dashboard Preview */}
-                <motion.div
-                    initial={{ opacity: 0, y: 100 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 0.2 }}
-                    className="mt-20 w-full max-w-5xl rounded-3xl border-4 border-white shadow-2xl overflow-hidden bg-white relative"
-                >
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent pointer-events-none z-10" />
-                    <img
-                        src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80"
-                        alt="Beautiful Home Interior"
-                        className="w-full h-auto object-cover max-h-[600px]"
-                    />
-                    <div className="absolute bottom-8 left-8 z-20 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-2xl border-4 border-white shadow-inner">
-                            98
-                        </div>
-                        <div>
-                            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">AI Match Score</p>
-                            <p className="text-lg font-bold text-slate-900">Perfect fit for you</p>
-                        </div>
-                    </div>
-                </motion.div>
-            </section>
+            </motion.section>
 
             {/* Features Section */}
             <section className="py-24 bg-white relative">

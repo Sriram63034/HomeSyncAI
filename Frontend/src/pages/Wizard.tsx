@@ -2,25 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
-    Building2, Home, Landmark, Users, Briefcase, ChevronRight, ChevronLeft, MapPin,
+    Building2, Home, Landmark, Users, Briefcase, ChevronRight, ChevronLeft,
     Car, Dumbbell, Waves, TreePine, Shield, Train
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Slider } from '../components/ui/Slider';
 import { Card } from '../components/ui/Card';
-import { MapContainer, TileLayer, Marker, Circle, useMapEvents } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import WizardMap from '../components/WizardMap';
 import { useAuth } from '../context/AuthContext';
 import { fetchApi } from '../utils/api';
 
-// Fix Leaflet icon issue
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
+// Google Maps API Key - Placeholder
+const GOOGLE_MAPS_API_KEY = "AIzaSyDCfKoaqxficeuaZx4gJ11USC2IPm5DZEA";
 
 // Mock Icons map for dynamic rendering
 
@@ -31,7 +24,7 @@ const TOTAL_STEPS = 7;
 interface WizardData {
     buyerType: string;
     budget: [number, number];
-    location: { lat: number; lng: number; radiusBase: number }; // radiusBase in km
+    location: { lat: number; lng: number; radiusBase: number; city: string }; // radiusBase in km
     houseTypes: string[];
     bedrooms: string[];
     amenities: string[];
@@ -155,71 +148,27 @@ const StepBudget = ({ data, setData }: { data: WizardData, setData: any }) => {
 };
 
 // --- Step 3 ---
-function LocationPicker({ data, setData }: any) {
-    const mapRef = React.useRef<any>(null);
-
-    const MapEvents = () => {
-        useMapEvents({
-            click(e) {
-                setData({ ...data, location: { ...data.location, lat: e.latlng.lat, lng: e.latlng.lng } });
-            },
-        });
-        return null;
-    };
-
+function LocationPicker({ data, setData }: { data: WizardData, setData: any }) {
     return (
         <div className="space-y-6">
             <div className="text-center mb-6">
                 <h2 className="text-3xl font-bold text-slate-900">Where do you want to live?</h2>
-                <p className="text-slate-500 mt-2">Select an area and adjust the search radius.</p>
+                <p className="text-slate-500 mt-2">Select a city by clicking a marker on the map.</p>
             </div>
 
-            <div className="h-[400px] w-full rounded-2xl overflow-hidden relative shadow-inner border border-slate-200">
-                <MapContainer
-                    center={[data.location.lat, data.location.lng]}
-                    zoom={12}
-                    scrollWheelZoom={true}
-                    style={{ height: '100%', width: '100%' }}
-                    ref={mapRef}
-                >
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <MapEvents />
-                    <Marker position={[data.location.lat, data.location.lng]} />
-                    <Circle
-                        center={[data.location.lat, data.location.lng]}
-                        radius={data.location.radiusBase * 1000}
-                        pathOptions={{ fillColor: '#3b82f6', color: '#1d4ed8', weight: 1 }}
-                    />
-                </MapContainer>
-
-                {/* Radius Controls Overlay */}
-                <div className="absolute top-4 right-4 z-[400] bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-lg border border-white flex flex-col gap-2">
-                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Search Radius</p>
-                    <div className="flex gap-2">
-                        {[2, 5, 10, 20].map((r) => (
-                            <button
-                                key={r}
-                                onClick={() => setData({ ...data, location: { ...data.location, radiusBase: r } })}
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all ${data.location.radiusBase === r ? 'bg-primary-600 text-white shadow-md shadow-primary-500/30' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                                    }`}
-                            >
-                                {r}k
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Search Overlay Mock */}
-                <div className="absolute top-4 left-4 z-[400] w-64">
-                    <div className="bg-white rounded-xl shadow-lg flex items-center px-4 py-3 border border-slate-100">
-                        <MapPin size={18} className="text-primary-500 mr-2" />
-                        <input type="text" placeholder="Search city or area..." className="w-full text-sm outline-none" />
-                    </div>
-                </div>
+            <div className="h-[430px] w-full rounded-2xl overflow-hidden relative shadow-inner border border-slate-200 bg-slate-50">
+                <WizardMap 
+                    location={data.location} 
+                    setLocation={(loc: any) => setData((prev: WizardData) => ({ ...prev, location: loc }))}
+                    googleMapsApiKey={GOOGLE_MAPS_API_KEY}
+                />
             </div>
+
+            {!data.location.city && (
+                <p className="text-center text-amber-600 text-sm font-medium animate-pulse">
+                    Please click a marker on the map to select your city.
+                </p>
+            )}
         </div>
     );
 }
@@ -323,7 +272,7 @@ const Wizard = () => {
         return {
             buyerType: '',
             budget: [5000000, 20000000], // 50L to 2Cr
-            location: { lat: 12.9716, lng: 77.5946, radiusBase: 5 }, // Default BGLR
+            location: { lat: 12.9716, lng: 77.5946, radiusBase: 5, city: '' }, // No default city
             houseTypes: [],
             bedrooms: [],
             amenities: [],
@@ -337,12 +286,21 @@ const Wizard = () => {
     }, [data]);
 
     const handleSubmit = async () => {
+        // Store wizard selections in localStorage first to ensure persistence
+        const searchData = {
+            city: data.location.city,
+            lat: data.location.lat,
+            lng: data.location.lng,
+            radius: data.location.radiusBase
+        };
+        localStorage.setItem("searchData", JSON.stringify(searchData));
+
         try {
             const payload = {
                 buyer_type: data.buyerType,
                 min_budget: data.budget[0],
                 max_budget: data.budget[1],
-                city: 'Bangalore', // Default for now
+                city: data.location.city,
                 latitude: data.location.lat,
                 longitude: data.location.lng,
                 search_radius: data.location.radiusBase,
@@ -355,6 +313,7 @@ const Wizard = () => {
                 method: 'POST',
                 body: JSON.stringify(payload)
             });
+
             navigate('/results');
         } catch (err) {
             console.error('Error saving preferences:', err);
@@ -378,6 +337,7 @@ const Wizard = () => {
     // Validation logic to prevent moving forward if empty (simplified)
     const canProceed = () => {
         if (page === 0 && !data.buyerType) return false;
+        if (page === 2 && !data.location.city) return false; // Step 3: Location
         if (page === 3 && data.houseTypes.length === 0) return false;
         if (page === 4 && data.bedrooms.length === 0) return false;
         return true;
@@ -389,7 +349,20 @@ const Wizard = () => {
             <div className="max-w-4xl mx-auto w-full px-6 mb-12">
                 <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
                     <span>Step {page + 1} of {TOTAL_STEPS}</span>
-                    <button onClick={() => navigate('/results')} className="hover:text-primary-600 transition-colors">Skip Wizard</button>
+                    <button 
+                        onClick={() => {
+                            const searchData = {
+                                city: data.location.city || "Bengaluru",
+                                lat: data.location.lat,
+                                lng: data.location.lng,
+                            };
+                            localStorage.setItem("searchData", JSON.stringify(searchData));
+                            navigate('/results');
+                        }} 
+                        className="hover:text-primary-600 transition-colors"
+                    >
+                        Skip Wizard
+                    </button>
                 </div>
                 <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
                     <motion.div
@@ -475,7 +448,7 @@ const Wizard = () => {
             </div>
 
             {/* Navigation Footer Fixed at Bottom */}
-            <div className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-lg border-t border-slate-200 py-4 px-6 z-50">
+            <div className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-lg py-4 px-6 z-50">
                 <div className="max-w-4xl mx-auto flex justify-between items-center">
                     <Button
                         variant="ghost"

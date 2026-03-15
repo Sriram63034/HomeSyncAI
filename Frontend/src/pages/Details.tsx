@@ -9,6 +9,8 @@ import { Button } from '../components/ui/Button';
 import { AIScoreRing } from '../components/ui/AIScoreRing';
 import { fetchApi } from '../utils/api';
 import { Skeleton } from '../components/ui/Spinner';
+import { AgentContactModal } from '../components/AgentContactModal';
+import { ScheduleTourModal } from '../components/ScheduleTourModal';
 
 const MOCK_IMAGES = [
     'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200',
@@ -25,6 +27,8 @@ const Details = () => {
     const [currentImage, setCurrentImage] = useState(0);
     const [isSaved, setIsSaved] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showAgentModal, setShowAgentModal] = useState(false);
+    const [showTourModal, setShowTourModal] = useState(false);
 
     useEffect(() => {
         const fetchHouse = async () => {
@@ -218,8 +222,8 @@ const Details = () => {
                                 </div>
                             )}
 
-                            <Button size="lg" className="w-full text-lg mb-3" magnetic>Contact Agent</Button>
-                            <Button size="lg" variant="outline" className="w-full">Schedule Tour</Button>
+                            <Button size="lg" className="w-full text-lg mb-3" magnetic onClick={() => setShowAgentModal(true)}>Contact Agent</Button>
+                            <Button size="lg" variant="outline" className="w-full" onClick={() => setShowTourModal(true)}>Schedule Tour</Button>
                         </div>
 
                         {/* AI Score Card */}
@@ -259,6 +263,17 @@ const Details = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modals */}
+            <AgentContactModal 
+                isOpen={showAgentModal} 
+                onClose={() => setShowAgentModal(false)} 
+            />
+            <ScheduleTourModal
+                isOpen={showTourModal}
+                onClose={() => setShowTourModal(false)}
+                propertyId={id || ''}
+            />
         </div>
     );
 };

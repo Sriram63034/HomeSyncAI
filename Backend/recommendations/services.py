@@ -117,6 +117,21 @@ def get_recommendations_for_user(user):
         return []
 
     houses = House.objects.all()
+    
+    # Strict filtering by location if coordinates are provided
+    if preferences.latitude and preferences.longitude:
+        filtered_houses = []
+        user_lat = float(preferences.latitude)
+        user_lon = float(preferences.longitude)
+        radius = float(preferences.search_radius)
+        
+        for house in houses:
+            if house.latitude and house.longitude:
+                dist = haversine(user_lat, user_lon, float(house.latitude), float(house.longitude))
+                if dist <= radius:
+                    filtered_houses.append(house)
+        houses = filtered_houses
+
     recommendations = []
 
     for house in houses:

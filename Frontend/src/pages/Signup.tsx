@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Home, ShieldCheck } from 'lucide-react';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
-import { useAuth } from '../context/AuthContext';
 import { fetchApi } from '../utils/api';
 
 const Signup = () => {
@@ -16,7 +15,6 @@ const Signup = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const { login } = useAuth();
 
     useEffect(() => {
         let strength = 0;

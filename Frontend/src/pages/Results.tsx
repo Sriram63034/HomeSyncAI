@@ -7,6 +7,13 @@ import { AIScoreRing } from '../components/ui/AIScoreRing';
 import { Skeleton } from '../components/ui/Spinner';
 import { Link } from 'react-router-dom';
 import { fetchApi } from '../utils/api';
+import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+
+const GOOGLE_MAPS_API_KEY = "AIzaSyDCfKoaqxficeuaZx4gJ11USC2IPm5DZEA";
+const mapContainerStyle = {
+    width: "100%",
+    height: "600px",
+};
 
 const Results = () => {
     const [loading, setLoading] = useState(true);
@@ -17,26 +24,70 @@ const Results = () => {
     const fetchRecommendations = async () => {
         try {
             setLoading(true);
+            
+            // 1. Read search data from localStorage
+            let storageData = localStorage.getItem("searchData");
+            
+            // Fallback: Check if we have wizard_data and recover from it
+            if (!storageData) {
+                const wizardDataStr = localStorage.getItem("wizard_data");
+                if (wizardDataStr) {
+                    try {
+                        const wizardData = JSON.parse(wizardDataStr);
+                        if (wizardData.location) {
+                            const recoveredData = {
+                                city: wizardData.location.city || "Bengaluru",
+                                lat: wizardData.location.lat,
+                                lng: wizardData.location.lng,
+                            };
+                            localStorage.setItem("searchData", JSON.stringify(recoveredData));
+                            storageData = JSON.stringify(recoveredData);
+                        }
+                    } catch (e) {
+                        console.error("Error parsing wizard_data:", e);
+                    }
+                }
+            }
+
+            if (!storageData) {
+                setError("No search metadata found. Please complete the search wizard to select a location first.");
+                setLoading(false);
+                return;
+            }
+
+            const searchData = JSON.parse(storageData);
+            const { city } = searchData;
+
+            if (!city) {
+                setError("No city selected. Please try the wizard again.");
+                setLoading(false);
+                return;
+            }
+
+            // 2. Fetch recommendations using GET with city
             const [data, savedData] = await Promise.all([
-                fetchApi('/houses/recommendations/'),
+                fetchApi(`/houses/by-city/?city=${city}`),
                 fetchApi('/saved/')
             ]);
             
             const savedIds = new Set(savedData.map((item: any) => item.house));
             
             // Map the API response to fit the frontend structure
+            // Note: house.values() in Django returns raw DB fields
             const mappedHouses = data.map((item: any) => ({
-                id: item.house_details.id,
-                title: item.house_details.title,
-                price: parseFloat(item.house_details.price),
-                score: item.match_score,
-                beds: item.house_details.bedrooms,
-                baths: item.house_details.bathrooms,
-                area: item.house_details.square_feet,
-                location: `${item.house_details.area}, ${item.house_details.city}`,
-                image: item.image_url || item.house_details.image_url || '/default-house.jpg',
-                isSaved: savedIds.has(item.house_details.id),
-                details: item.house_details
+                id: item.id,
+                title: item.title,
+                price: parseFloat(item.price),
+                score: 100, // Static score for simple system
+                beds: item.bedrooms,
+                baths: item.bathrooms,
+                area: item.square_feet,
+                location: item.city,
+                latitude: item.latitude,
+                longitude: item.longitude,
+                image: item.image_url || '/default-house.jpg',
+                isSaved: savedIds.has(item.id),
+                details: item
             }));
             setHouses(mappedHouses);
         } catch (err: any) {
@@ -158,10 +209,8 @@ const Results = () => {
                         </Link>
                     </div>
                 ) : viewMode === 'map' ? (
-                    <div className="h-[600px] w-full bg-slate-200 rounded-2xl flex items-center justify-center border border-slate-300">
-                        <p className="text-slate-500 font-medium text-lg flex items-center gap-2">
-                            <MapIcon /> Map View Integration (Pending Leaflet Setup inside Results)
-                        </p>
+                    <div className="h-[600px] w-full bg-slate-200 rounded-2xl overflow-hidden border border-slate-300 relative">
+                        <MapDisplay houses={houses} />
                     </div>
                 ) : (
                     <>
@@ -237,6 +286,48 @@ const Results = () => {
                     </>
                 )}
             </div>
+        </div>
+    );
+};
+
+const MapDisplay = ({ houses }: { houses: any[] }) => {
+    const { isLoaded } = useJsApiLoader({
+        id: "google-map-script",
+        googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+    });
+
+    const searchData = JSON.parse(localStorage.getItem("searchData") || "{}");
+    const center = {
+        lat: searchData.lat || 12.9716,
+        lng: searchData.lng || 77.5946
+    };
+
+    return isLoaded ? (
+        <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            center={center}
+            zoom={12}
+            options={{
+                disableDefaultUI: false,
+                zoomControl: true,
+            }}
+        >
+            {houses.map((house) => (
+                house.latitude && house.longitude && (
+                    <Marker
+                        key={house.id}
+                        position={{ 
+                            lat: parseFloat(house.latitude), 
+                            lng: parseFloat(house.longitude) 
+                        }}
+                        title={house.title}
+                    />
+                )
+            ))}
+        </GoogleMap>
+    ) : (
+        <div className="w-full h-full flex items-center justify-center">
+            <p className="text-slate-500">Loading Map...</p>
         </div>
     );
 };
