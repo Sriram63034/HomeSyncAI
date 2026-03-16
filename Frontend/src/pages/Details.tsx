@@ -105,7 +105,7 @@ const Details = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-50 pt-24 px-4 flex flex-col items-center">
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 px-4 flex flex-col items-center transition-colors">
                 <Skeleton className="h-[60vh] w-full max-w-7xl rounded-3xl mb-8" />
                 <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-4">
@@ -120,10 +120,10 @@ const Details = () => {
 
     if (error || !house) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-                <div className="text-center bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
-                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Oops!</h2>
-                    <p className="text-slate-500 mb-6">{error || 'House not found'}</p>
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4 transition-colors">
+                <div className="text-center bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg border border-slate-100 dark:border-slate-800 max-w-md w-full">
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Oops!</h2>
+                    <p className="text-slate-500 dark:text-slate-400 mb-6">{error || 'House not found'}</p>
                     <Button onClick={() => navigate('/results')}>Back to Results</Button>
                 </div>
             </div>
@@ -131,22 +131,22 @@ const Details = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-24">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
             {/* Top Navbar Contextual */}
-            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex items-center justify-between">
-                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-600 hover:text-primary-600 transition-colors">
+            <div className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
+                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                     <ArrowLeft size={20} /> <span className="font-medium hidden sm:inline">Back to Results</span>
                 </button>
                 <div className="flex items-center gap-3">
                     <button 
                         onClick={() => setShowShareModal(true)}
-                        className="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors"
+                        className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
                     >
                         <Share2 size={20} />
                     </button>
                     <button
                         onClick={toggleSave}
-                        className={`p-2 rounded-full transition-colors flex items-center justify-center gap-2 px-4 shadow-sm border ${isSaved ? 'bg-red-50 border-red-200 text-red-500' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        className={`p-2 rounded-full transition-colors flex items-center justify-center gap-2 px-4 shadow-sm border ${isSaved ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-900/50 text-red-500' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                             }`}
                     >
                         <Heart size={18} className={isSaved ? 'fill-red-500' : ''} />
@@ -217,11 +217,11 @@ const Details = () => {
                 <div className="lg:col-span-2 space-y-8">
                     <div>
                         <div className="flex flex-wrap items-center gap-3 mb-3 text-sm font-medium">
-                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full">For Sale</span>
-                            <span className="flex items-center gap-1 text-slate-500"><MapPin size={16} /> {house.area}, {house.city}</span>
+                            <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full">For Sale</span>
+                            <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400"><MapPin size={16} /> {house.area}, {house.city}</span>
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-bold text-slate-900 mb-4">{house.title}</h1>
-                        <div className="flex gap-6 text-slate-600 border-b border-slate-200 pb-6">
+                        <h1 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">{house.title}</h1>
+                        <div className="flex gap-6 text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 pb-6">
                             <span className="flex items-center gap-2"><Bed className="text-primary-500" /> <strong>{house.bedrooms}</strong> Beds</span>
                             <span className="flex items-center gap-2"><Bath className="text-primary-500" /> <strong>{house.bathrooms}</strong> Baths</span>
                             <span className="flex items-center gap-2"><Square className="text-primary-500" /> <strong>{house.square_feet}</strong> sqft</span>
@@ -229,16 +229,16 @@ const Details = () => {
                     </div>
 
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 mb-4">About this home</h2>
-                        <p className="text-slate-600 leading-relaxed text-lg">{house.description || 'No description available for this property.'}</p>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">About this home</h2>
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">{house.description || 'No description available for this property.'}</p>
                     </div>
 
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 mb-4">Amenities</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Amenities</h2>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             {(house.amenities || []).map((am: string, i: number) => (
-                                <div key={i} className="flex items-center gap-2 text-slate-700 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-                                    <div className="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center">
+                                <div key={i} className="flex items-center gap-2 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                                    <div className="w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 flex items-center justify-center">
                                         {i % 2 === 0 ? <Car size={16} /> : <Waves size={16} />}
                                     </div>
                                     <span className="font-medium text-sm">{am}</span>
@@ -249,8 +249,8 @@ const Details = () => {
 
                     {/* Map Section */}
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 mb-4">Location</h2>
-                        <div className="w-full h-[350px] rounded-xl overflow-hidden shadow-md">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Location</h2>
+                        <div className="w-full h-[350px] rounded-xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-800">
                             <iframe
                                 width="100%"
                                 height="100%"
@@ -268,18 +268,18 @@ const Details = () => {
                     <div className="sticky top-24 space-y-6">
 
                         {/* Price Card */}
-                        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl shadow-slate-200/50">
-                            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Asking Price</p>
-                            <h2 className="text-4xl font-bold text-slate-900 mb-6">{formatPrice(house.price)}</h2>
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl dark:shadow-none">
+                            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Asking Price</p>
+                            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-6">{formatPrice(house.price)}</h2>
 
                             {house.price < 40000000 && (
-                                <div className="bg-green-50 rounded-2xl p-4 mb-6 border border-green-100 flex items-start gap-4">
+                                <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 mb-6 border border-green-100 dark:border-green-900/30 flex items-start gap-4">
                                     <div className="mt-1">
-                                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">✓</div>
+                                        <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center text-green-600 dark:text-green-400 font-bold">✓</div>
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold text-green-800">Great Deal!</h4>
-                                        <p className="text-green-700 text-sm mt-1">
+                                        <h4 className="font-semibold text-green-800 dark:text-green-300">Great Deal!</h4>
+                                        <p className="text-green-700 dark:text-green-400 text-sm mt-1">
                                             This property is priced competitively for the {house.area} area.
                                         </p>
                                     </div>

@@ -32,13 +32,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                             props.onBlur?.(e);
                         }}
                         className={cn(
-                            'peer w-full h-14 bg-white/50 backdrop-blur-sm border rounded-xl px-4 pt-4 pb-1 text-slate-900',
+                            'peer w-full h-14 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border rounded-xl px-4 pt-4 pb-1 text-slate-900 dark:text-white',
                             'transition-all duration-300 outline-none focus:ring-2 focus:border-transparent',
                             error
-                                ? 'border-red-300 focus:ring-red-500/20 bg-red-50/50'
+                                ? 'border-red-300 dark:border-red-500/50 focus:ring-red-500/20 bg-red-50/50 dark:bg-red-900/20'
                                 : success
-                                    ? 'border-green-300 focus:ring-green-500/20 bg-green-50/50'
-                                    : 'border-slate-200 focus:ring-primary-500/20 focus:bg-white',
+                                    ? 'border-green-300 dark:border-green-500/50 focus:ring-green-500/20 bg-green-50/50 dark:bg-green-900/20'
+                                    : 'border-slate-200 dark:border-slate-700 focus:ring-primary-500/20 focus:bg-white dark:focus:bg-slate-800',
                             className
                         )}
                         placeholder=" " // Important for peer-placeholder-shown to work
@@ -48,9 +48,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         htmlFor={inputId}
                         className={cn(
                             'absolute left-4 cursor-text transition-all duration-300 transform',
-                            'text-slate-500',
+                            'text-slate-500 dark:text-slate-400',
                             'peer-placeholder-shown:top-4 peer-placeholder-shown:text-base',
-                            'peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary-600',
+                            'peer-focus:top-2 peer-focus:text-xs peer-focus:text-primary-600 dark:peer-focus:text-primary-400',
                             'top-2 text-xs', // Default state when input has value
                             error && 'peer-focus:text-red-600 text-red-500',
                             success && 'peer-focus:text-green-600 text-green-500'

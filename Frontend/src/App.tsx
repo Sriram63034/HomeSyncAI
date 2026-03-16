@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import SplashCursor from './components/SplashCursor';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Pages
 import Landing from './pages/Landing';
@@ -54,8 +55,9 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <Router>
-      <SplashCursor 
+    <ThemeProvider>
+      <Router>
+        <SplashCursor 
         SIM_RESOLUTION={128}
         DYE_RESOLUTION={1024}
         SPLAT_RADIUS={0.25}
@@ -70,7 +72,8 @@ function App() {
         </main>
         <Footer />
       </div>
-    </Router>
+      </Router>
+    </ThemeProvider>
   );
 }
 

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, User, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
+import ThemeToggle from '../ui/ThemeToggle';
 
 const Navbar = () => {
     const { isAuthenticated, logout } = useAuth();
@@ -23,7 +24,7 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className="fixed w-full z-50 glass lg:px-8 px-4 py-3 transition-all duration-300">
+        <nav className="fixed w-full z-50 glass dark:glass-dark lg:px-8 px-4 py-3 transition-colors duration-300">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <Link to={isAuthenticated ? "/home" : "/"} className="flex items-center gap-2 group">
                     <div className="bg-primary-600 p-2 rounded-xl text-white group-hover:bg-primary-500 transition-colors">
@@ -42,7 +43,7 @@ const Navbar = () => {
                                 <li key={link.name}>
                                     <Link
                                         to={link.path}
-                                        className={`text-sm font-medium transition-colors hover:text-primary-600 relative ${location.pathname === link.path ? 'text-primary-600' : 'text-slate-600'
+                                        className={`text-sm font-medium transition-colors hover:text-primary-600 relative ${location.pathname === link.path ? 'text-primary-600' : 'text-slate-600 dark:text-slate-300'
                                             }`}
                                     >
                                         {link.name}
@@ -57,10 +58,11 @@ const Navbar = () => {
                             ))}
                         </ul>
                     )}
-                    <div className="flex items-center gap-4 border-l border-slate-200 pl-4">
+                    <div className="flex items-center gap-4 border-l border-slate-200 dark:border-slate-700 pl-4">
+                        <ThemeToggle />
                         {!isAuthenticated ? (
                             <>
-                                <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-primary-600">
+                                <Link to="/login" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary-600">
                                     Log in
                                 </Link>
                                 <Link
@@ -74,7 +76,7 @@ const Navbar = () => {
                         ) : (
                             <button
                                 onClick={handleLogout}
-                                className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2"
+                                className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2"
                             >
                                 Logout
                             </button>
@@ -83,12 +85,15 @@ const Navbar = () => {
                 </div>
 
                 {/* Mobile Toggle */}
-                <button
-                    className="md:hidden p-2 text-slate-600"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    {isOpen ? <X size={24} /> : <Menu size={24} />}
-                </button>
+                <div className="flex items-center gap-2 md:hidden">
+                    <ThemeToggle />
+                    <button
+                        className="p-2 text-slate-600 dark:text-slate-300"
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        {isOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                </div>
             </div>
 
             {/* Mobile Nav */}
@@ -98,7 +103,7 @@ const Navbar = () => {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden overflow-hidden bg-white/95 backdrop-blur-lg border-t border-slate-100 mt-3 -mx-4 px-4"
+                        className="md:hidden overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-100 dark:border-slate-800 mt-3 -mx-4 px-4"
                     >
                         <div className="py-4 flex flex-col gap-4">
                             {isAuthenticated && navLinks.map((link) => (
@@ -106,20 +111,20 @@ const Navbar = () => {
                                     key={link.name}
                                     to={link.path}
                                     onClick={() => setIsOpen(false)}
-                                    className={`block text-base font-medium ${location.pathname === link.path ? 'text-primary-600' : 'text-slate-600'
+                                    className={`block text-base font-medium ${location.pathname === link.path ? 'text-primary-600' : 'text-slate-600 dark:text-slate-300'
                                         }`}
                                 >
                                     {link.name}
                                 </Link>
                             ))}
-                            <hr className="border-slate-100" />
+                            <hr className="border-slate-100 dark:border-slate-800" />
                             <div className="flex flex-col gap-3">
                                 {!isAuthenticated ? (
                                     <>
                                         <Link
                                             to="/login"
                                             onClick={() => setIsOpen(false)}
-                                            className="w-full text-center py-2 text-slate-600 font-medium border border-slate-200 rounded-full"
+                                            className="w-full text-center py-2 text-slate-600 dark:text-slate-300 font-medium border border-slate-200 dark:border-slate-700 rounded-full"
                                         >
                                             Log in
                                         </Link>
@@ -134,7 +139,7 @@ const Navbar = () => {
                                 ) : (
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full text-center py-2 bg-slate-100 text-slate-700 font-medium rounded-full"
+                                        className="w-full text-center py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium rounded-full"
                                     >
                                         Logout
                                     </button>

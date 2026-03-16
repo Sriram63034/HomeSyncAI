@@ -66,11 +66,11 @@ const Signup = () => {
     const isFormValid = name && email.includes('@') && passwordStrength >= 2 && passwordMatch;
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden transition-colors">
             {/* Background decoration */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                <div className="absolute top-1/4 right-[-10%] w-[50%] h-[50%] bg-accent-200/30 rounded-full blur-3xl" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-200/30 rounded-full blur-3xl" />
+                <div className="absolute top-1/4 right-[-10%] w-[50%] h-[50%] bg-accent-200/30 dark:bg-accent-900/20 rounded-full blur-3xl" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-200/30 dark:bg-primary-900/20 rounded-full blur-3xl" />
             </div>
 
             <motion.div
@@ -84,14 +84,14 @@ const Signup = () => {
                         <Home size={32} />
                     </Link>
                 </div>
-                <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 mb-2">
+                <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
                     Create an account
                 </h2>
-                <p className="text-center text-sm text-slate-600 mb-8">
+                <p className="text-center text-sm text-slate-600 dark:text-slate-400 mb-8">
                     Join HomeSync AI to find your dream home faster
                 </p>
 
-                <div className="glass rounded-2xl p-8 shadow-xl border border-white/40">
+                <div className="glass dark:glass-dark rounded-2xl p-8 shadow-xl border border-white/40 dark:border-slate-800">
                     <form className="space-y-1" onSubmit={handleSubmit}>
                         {error && (
                             <div className="mb-4 p-3 bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl animate-fade-in flex items-center gap-2">
@@ -134,7 +134,7 @@ const Signup = () => {
                                     exit={{ opacity: 0, height: 0 }}
                                     className="mb-4 -mt-2 px-1"
                                 >
-                                    <div className="flex gap-1 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div className="flex gap-1 h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                         {[1, 2, 3, 4].map((level) => (
                                             <div
                                                 key={level}
@@ -143,8 +143,8 @@ const Signup = () => {
                                             />
                                         ))}
                                     </div>
-                                    <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
-                                        <ShieldCheck size={12} className={passwordStrength >= 3 ? 'text-green-500' : 'text-slate-400'} />
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 flex items-center gap-1">
+                                        <ShieldCheck size={12} className={passwordStrength >= 3 ? 'text-green-500' : 'text-slate-400 dark:text-slate-500'} />
                                         Strength: {['Weak', 'Fair', 'Good', 'Strong'][Math.max(0, passwordStrength - 1)]}
                                     </p>
                                 </motion.div>
@@ -174,7 +174,7 @@ const Signup = () => {
                         </div>
                     </form>
 
-                    <div className="mt-6 text-center text-sm text-slate-600">
+                    <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
                         Already have an account?{' '}
                         <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
                             Log in

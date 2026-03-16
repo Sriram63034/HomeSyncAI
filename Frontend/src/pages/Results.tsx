@@ -175,31 +175,31 @@ const Results = () => {
     });
 
     return (
-        <div className="min-h-screen bg-slate-50 pt-20 pb-24">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-20 pb-24 transition-colors duration-300">
             {/* Sticky Filter Bar */}
-            <div className="sticky top-[64px] z-40 bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm py-4">
+            <div className="sticky top-[64px] z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm py-4">
                 <div className="max-w-7xl mx-auto px-4 lg:px-8 flex items-center justify-between">
                     <div className="flex items-center gap-4 overflow-x-auto no-scrollbar">
-                        <Link to="/wizard" className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full text-sm font-medium transition-colors border border-slate-200">
+                        <Link to="/wizard" className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-full text-sm font-medium transition-colors border border-slate-200 dark:border-slate-700">
                             <Filter size={16} /> Edit Preferences
                         </Link>
                         <div className="hidden md:flex items-center gap-2">
-                            <span className="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-sm font-medium whitespace-nowrap border border-primary-100">
+                            <span className="px-3 py-1 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium whitespace-nowrap border border-primary-100 dark:border-primary-800">
                                 ₹50L - ₹2Cr
                             </span>
-                            <span className="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-sm font-medium whitespace-nowrap border border-primary-100">
+                            <span className="px-3 py-1 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium whitespace-nowrap border border-primary-100 dark:border-primary-800">
                                 2, 3 BHK
                             </span>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button className="flex items-center gap-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 px-4 py-2 rounded-full hover:bg-slate-50 transition-colors">
+                        <button className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                             Sort by: Match <ChevronDown size={14} />
                         </button>
                         <button
                             onClick={() => setViewMode(viewMode === 'grid' ? 'map' : 'grid')}
-                            className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full transition-colors border ${viewMode === 'map' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                            className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full transition-colors border ${viewMode === 'map' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
                                 }`}
                         >
                             <MapIcon size={16} /> {viewMode === 'grid' ? 'Map View' : 'Grid View'}
@@ -211,8 +211,8 @@ const Results = () => {
             <div className="max-w-7xl mx-auto px-4 lg:px-8 mt-8">
                 <div className="flex justify-between items-end mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-900">Your Perfect Matches</h1>
-                        <p className="text-slate-500 mt-2">We found properties that closely match your lifestyle and budget.</p>
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Your Perfect Matches</h1>
+                        <p className="text-slate-500 dark:text-slate-400 mt-2">We found properties that closely match your lifestyle and budget.</p>
                     </div>
                 </div>
 
@@ -220,7 +220,7 @@ const Results = () => {
                     // Skeleton Grid
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[1, 2, 3, 4, 5, 6].map(i => (
-                            <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 h-[400px] flex flex-col">
+                            <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 h-[400px] flex flex-col">
                                 <Skeleton className="h-48 w-full rounded-xl mb-4" />
                                 <Skeleton className="h-6 w-3/4 mb-2" />
                                 <Skeleton className="h-4 w-1/2 mb-6" />
@@ -232,21 +232,21 @@ const Results = () => {
                         ))}
                     </div>
                 ) : error ? (
-                    <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
                         <div className="text-red-500 mb-4 text-lg font-semibold">Error Loading Recommendations</div>
-                        <p className="text-slate-500 mb-8">{error}</p>
+                        <p className="text-slate-500 dark:text-slate-400 mb-8">{error}</p>
                         <Button onClick={fetchRecommendations} variant="primary">Try Again</Button>
                     </div>
                 ) : houses.length === 0 ? (
-                    <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
                         <div className="text-slate-400 mb-4 text-lg font-semibold">No Recommendations Found</div>
-                        <p className="text-slate-500 mb-8">Try adjusting your preferences to find more matches.</p>
+                        <p className="text-slate-500 dark:text-slate-400 mb-8">Try adjusting your preferences to find more matches.</p>
                         <Link to="/wizard">
                             <Button variant="primary">Go to Wizard</Button>
                         </Link>
                     </div>
                 ) : viewMode === 'map' ? (
-                    <div className="h-[600px] w-full bg-slate-200 rounded-2xl overflow-hidden border border-slate-300 relative">
+                    <div className="h-[600px] w-full bg-slate-200 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-700 relative">
                         <MapDisplay houses={houses} />
                     </div>
                 ) : (
@@ -256,15 +256,15 @@ const Results = () => {
                             <div>
                                 {inBudget.length > 0 ? (
                                     <>
-                                        <h2 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-2">In Your Budget</h2>
+                                        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-700 pb-2">In Your Budget</h2>
                                         <ChromaGrid 
                                             items={inBudget.map(mapHouseToChromaItem)} 
                                             onToggleSave={toggleSave} 
                                         />
                                     </>
                                 ) : (
-                                    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 text-center mb-8">
-                                        <p className="text-slate-600 font-medium">No properties found in your exact budget. Showing nearby price options.</p>
+                                    <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 text-center mb-8">
+                                        <p className="text-slate-600 dark:text-slate-400 font-medium">No properties found in your exact budget. Showing nearby price options.</p>
                                     </div>
                                 )}
                             </div>
@@ -272,7 +272,7 @@ const Results = () => {
                             {/* Below Budget Section */}
                             {belowBudget.length > 0 && (
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-2">Below Budget Deals</h2>
+                                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-700 pb-2">Below Budget Deals</h2>
                                     <ChromaGrid 
                                         items={belowBudget.slice(0, 4).map(mapHouseToChromaItem)} 
                                         onToggleSave={toggleSave} 
@@ -283,7 +283,7 @@ const Results = () => {
                             {/* Above Budget Section */}
                             {aboveBudget.length > 0 && (
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-2">Slightly Above Budget Options</h2>
+                                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-700 pb-2">Slightly Above Budget Options</h2>
                                     <ChromaGrid 
                                         items={aboveBudget.slice(0, 4).map(mapHouseToChromaItem)} 
                                         onToggleSave={toggleSave} 

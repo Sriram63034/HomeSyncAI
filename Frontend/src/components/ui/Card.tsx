@@ -56,7 +56,7 @@ export const Card = ({ children, className, tilt = false, onClick }: CardProps) 
                 transformStyle: 'preserve-3d',
             }}
             className={cn(
-                'group relative rounded-2xl bg-white border border-slate-100 shadow-sm transition-shadow hover:shadow-xl',
+                'group relative rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm transition-shadow hover:shadow-xl',
                 tilt && 'cursor-pointer',
                 className
             )}

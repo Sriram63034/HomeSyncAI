@@ -71,7 +71,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({ isOpen, 
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-auto border border-slate-100 relative"
+                            className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden pointer-events-auto border border-slate-100 dark:border-slate-800 relative"
                         >
                             {/* Close Button */}
                             <button
@@ -97,41 +97,41 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({ isOpen, 
 
                             {/* Share Actions */}
                             <div className="p-6">
-                                <h4 className="text-center font-bold text-slate-900 mb-6 text-xl">Share this home</h4>
+                                <h4 className="text-center font-bold text-slate-900 dark:text-white mb-6 text-xl">Share this home</h4>
 
                                 <div className="grid grid-cols-4 gap-4 mb-8">
                                     <button onClick={handleWhatsApp} className="flex flex-col items-center gap-2 group">
                                         <div className="w-12 h-12 rounded-full bg-[#128C7E] text-white flex items-center justify-center transform transition-transform group-hover:scale-110 shadow-md shadow-[#128C7E]/20">
                                             <MessageCircle size={22} className="fill-current" />
                                         </div>
-                                        <span className="text-xs font-semibold text-slate-600 group-hover:text-slate-900">WhatsApp</span>
+                                        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">WhatsApp</span>
                                     </button>
 
                                     <button onClick={handleTelegram} className="flex flex-col items-center gap-2 group">
                                         <div className="w-12 h-12 rounded-full bg-[#0088cc] text-white flex items-center justify-center transform transition-transform group-hover:scale-110 shadow-md shadow-[#0088cc]/20">
                                             <Send size={20} className="ml-1" />
                                         </div>
-                                        <span className="text-xs font-semibold text-slate-600 group-hover:text-slate-900">Telegram</span>
+                                        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Telegram</span>
                                     </button>
 
                                     <button onClick={handleTwitter} className="flex flex-col items-center gap-2 group">
                                         <div className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center transform transition-transform group-hover:scale-110 shadow-md shadow-black/20">
                                             <TwitterIcon size={18} />
                                         </div>
-                                        <span className="text-xs font-semibold text-slate-600 group-hover:text-slate-900">X (Twitter)</span>
+                                        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">X (Twitter)</span>
                                     </button>
 
                                     <button onClick={handleEmail} className="flex flex-col items-center gap-2 group">
                                         <div className="w-12 h-12 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center transform transition-transform group-hover:scale-110 shadow-md shadow-slate-300">
                                             <Mail size={22} />
                                         </div>
-                                        <span className="text-xs font-semibold text-slate-600 group-hover:text-slate-900">Email</span>
+                                        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">Email</span>
                                     </button>
                                 </div>
 
                                 {/* Copy Link */}
-                                <div className="flex items-center p-1 border border-slate-200 rounded-xl bg-slate-50">
-                                    <div className="px-3 py-2 text-sm text-slate-500 truncate flex-1 min-w-0 font-medium">
+                                <div className="flex items-center p-1 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800">
+                                    <div className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400 truncate flex-1 min-w-0 font-medium">
                                         {shareUrl}
                                     </div>
                                     <Button

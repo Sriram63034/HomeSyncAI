@@ -74,9 +74,9 @@ export default function WizardMap({ location, setLocation, googleMapsApiKey }: W
   return isLoaded ? (
     <div className="relative w-full h-full">
       <div className="absolute top-4 left-4 z-[400] flex flex-col gap-2 pointer-events-none">
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg px-4 py-3 border border-slate-100">
-          <p className="text-sm font-semibold text-slate-800">Cities of India</p>
-          <p className="text-xs text-slate-500">Click a marker to select</p>
+        <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-xl shadow-lg px-4 py-3 border border-slate-100 dark:border-slate-800">
+          <p className="text-sm font-semibold text-slate-800 dark:text-white">Cities of India</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Click a marker to select</p>
         </div>
         
         {location.city && (

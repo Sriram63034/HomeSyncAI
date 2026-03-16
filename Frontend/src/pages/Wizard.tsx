@@ -79,8 +79,8 @@ const StepBuyerType = ({ data, setData }: { data: WizardData, setData: any }) =>
     return (
         <div className="space-y-6">
             <div className="text-center mb-10">
-                <h2 className="text-3xl font-bold text-slate-900">What brings you here?</h2>
-                <p className="text-slate-500 mt-2">Let us tailor the AI matching to your goals.</p>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white">What brings you here?</h2>
+                <p className="text-slate-500 dark:text-slate-400 mt-2">Let us tailor the AI matching to your goals.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {options.map((opt) => (
@@ -88,13 +88,13 @@ const StepBuyerType = ({ data, setData }: { data: WizardData, setData: any }) =>
                         key={opt.id}
                         tilt
                         onClick={() => setData({ ...data, buyerType: opt.id })}
-                        className={`p-6 cursor-pointer border-2 transition-all duration-300 ${data.buyerType === opt.id ? 'border-primary-500 ring-4 ring-primary-500/20 bg-primary-50/50' : 'border-transparent hover:border-slate-300'
+                        className={`p-6 cursor-pointer border-2 transition-all duration-300 ${data.buyerType === opt.id ? 'border-primary-500 ring-4 ring-primary-500/20 bg-primary-50/50 dark:bg-primary-900/20' : 'border-transparent dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                             }`}
                     >
                         <div className="flex flex-col items-center text-center">
                             {opt.icon}
-                            <h3 className="font-semibold text-lg text-slate-900">{opt.label}</h3>
-                            <p className="text-sm text-slate-500 mt-2">{opt.desc}</p>
+                            <h3 className="font-semibold text-lg text-slate-900 dark:text-white">{opt.label}</h3>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{opt.desc}</p>
                         </div>
                     </Card>
                 ))}
@@ -114,12 +114,12 @@ const StepBudget = ({ data, setData }: { data: WizardData, setData: any }) => {
     return (
         <div className="space-y-8 max-w-2xl mx-auto">
             <div className="text-center mb-10">
-                <h2 className="text-3xl font-bold text-slate-900">Set your budget</h2>
-                <p className="text-slate-500 mt-2">Filter properties within your financial comfort zone.</p>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Set your budget</h2>
+                <p className="text-slate-500 dark:text-slate-400 mt-2">Filter properties within your financial comfort zone.</p>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                <h3 className="font-semibold text-slate-700 mb-8 text-center text-xl">
+            <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800">
+                <h3 className="font-semibold text-slate-700 dark:text-slate-300 mb-8 text-center text-xl">
                     {formatINR(data.budget[0])} - {formatINR(data.budget[1])}
                 </h3>
 
@@ -133,13 +133,13 @@ const StepBudget = ({ data, setData }: { data: WizardData, setData: any }) => {
                 />
 
                 <div className="mt-8 flex justify-center gap-4">
-                    <div className="bg-slate-50 px-4 py-2 rounded-xl text-center">
-                        <span className="text-xs text-slate-500 block">Min</span>
-                        <span className="font-semibold">{formatINR(data.budget[0])}</span>
+                    <div className="bg-slate-50 dark:bg-slate-800 px-4 py-2 rounded-xl text-center">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block">Min</span>
+                        <span className="font-semibold text-slate-900 dark:text-white">{formatINR(data.budget[0])}</span>
                     </div>
-                    <div className="bg-slate-50 px-4 py-2 rounded-xl text-center">
-                        <span className="text-xs text-slate-500 block">Max</span>
-                        <span className="font-semibold">{formatINR(data.budget[1])}</span>
+                    <div className="bg-slate-50 dark:bg-slate-800 px-4 py-2 rounded-xl text-center">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block">Max</span>
+                        <span className="font-semibold text-slate-900 dark:text-white">{formatINR(data.budget[1])}</span>
                     </div>
                 </div>
             </div>
@@ -152,11 +152,11 @@ function LocationPicker({ data, setData }: { data: WizardData, setData: any }) {
     return (
         <div className="space-y-6">
             <div className="text-center mb-6">
-                <h2 className="text-3xl font-bold text-slate-900">Where do you want to live?</h2>
-                <p className="text-slate-500 mt-2">Select a city by clicking a marker on the map.</p>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Where do you want to live?</h2>
+                <p className="text-slate-500 dark:text-slate-400 mt-2">Select a city by clicking a marker on the map.</p>
             </div>
 
-            <div className="h-[430px] w-full rounded-2xl overflow-hidden relative shadow-inner border border-slate-200 bg-slate-50">
+            <div className="h-[430px] w-full rounded-2xl overflow-hidden relative shadow-inner border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
                 <WizardMap 
                     location={data.location} 
                     setLocation={(loc: any) => setData((prev: WizardData) => ({ ...prev, location: loc }))}
@@ -194,8 +194,8 @@ const StepHouseType = ({ data, setData }: any) => {
     return (
         <div className="space-y-6 max-w-3xl mx-auto">
             <div className="text-center mb-10">
-                <h2 className="text-3xl font-bold text-slate-900">What type of house?</h2>
-                <p className="text-slate-500 mt-2">Select one or more property types.</p>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white">What type of house?</h2>
+                <p className="text-slate-500 dark:text-slate-400 mt-2">Select one or more property types.</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {types.map((type) => {
@@ -206,7 +206,7 @@ const StepHouseType = ({ data, setData }: any) => {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleToggle(type.id)}
-                            className={`p-6 rounded-2xl flex flex-col items-center justify-center border-2 transition-all ${isSelected ? 'border-primary-500 bg-primary-50 text-primary-700 ring-4 ring-primary-500/20' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                            className={`p-6 rounded-2xl flex flex-col items-center justify-center border-2 transition-all ${isSelected ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 ring-4 ring-primary-500/20' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
                                 }`}
                         >
                             {type.icon}
@@ -223,7 +223,7 @@ const StepHouseType = ({ data, setData }: any) => {
 const StepPills = ({ title, options, selected, onToggle, multi = true }: any) => {
     return (
         <div className="space-y-6 max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-slate-900 mb-8">{title}</h2>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8">{title}</h2>
             <div className="flex flex-wrap justify-center gap-3">
                 {options.map((opt: any) => {
                     const isSelected = selected.includes(opt.id);
@@ -242,10 +242,10 @@ const StepPills = ({ title, options, selected, onToggle, multi = true }: any) =>
                             }}
                             className={`px-6 py-3 rounded-full border flex items-center gap-2 font-medium transition-colors ${isSelected
                                     ? 'bg-primary-600 border-primary-600 text-white shadow-md shadow-primary-500/30'
-                                    : 'bg-white border-slate-200 text-slate-700 hover:border-primary-300 hover:bg-slate-50'
+                                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-slate-50 dark:hover:bg-slate-800'
                                 }`}
                         >
-                            {opt.icon && <span className={isSelected ? 'text-white' : 'text-slate-400'}>{opt.icon}</span>}
+                            {opt.icon && <span className={isSelected ? 'text-white' : 'text-slate-400 dark:text-slate-500'}>{opt.icon}</span>}
                             {opt.label}
                         </motion.button>
                     );
@@ -344,7 +344,7 @@ const Wizard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pt-24 pb-32 overflow-hidden flex flex-col">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 pb-32 overflow-hidden flex flex-col transition-colors duration-300">
             {/* Progress Bar & Header */}
             <div className="max-w-4xl mx-auto w-full px-6 mb-12">
                 <div className="flex justify-between text-sm font-medium text-slate-500 mb-2">
@@ -359,14 +359,14 @@ const Wizard = () => {
                             localStorage.setItem("searchData", JSON.stringify(searchData));
                             navigate('/results');
                         }} 
-                        className="hover:text-primary-600 transition-colors"
+                        className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                     >
                         Skip Wizard
                     </button>
                 </div>
-                <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                     <motion.div
-                        className="h-full bg-primary-600"
+                        className="h-full bg-primary-600 dark:bg-primary-500"
                         animate={{ width: `${progressPercentage}%` }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
                     />
@@ -448,13 +448,13 @@ const Wizard = () => {
             </div>
 
             {/* Navigation Footer Fixed at Bottom */}
-            <div className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-lg py-4 px-6 z-50">
+            <div className="fixed bottom-0 left-0 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg py-4 px-6 z-50 border-t border-slate-100 dark:border-slate-800">
                 <div className="max-w-4xl mx-auto flex justify-between items-center">
                     <Button
                         variant="ghost"
                         onClick={() => paginate(-1)}
                         disabled={page === 0}
-                        className={page === 0 ? "opacity-0 pointer-events-none" : ""}
+                        className={page === 0 ? "opacity-0 pointer-events-none" : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"}
                     >
                         <ChevronLeft className="mr-2 h-5 w-5" /> Back
                     </Button>

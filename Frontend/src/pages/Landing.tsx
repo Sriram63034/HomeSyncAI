@@ -31,7 +31,7 @@ const Landing = () => {
     };
 
     return (
-        <div className="bg-white min-h-screen overflow-hidden relative" onMouseMove={handleMouseMove}>
+        <div className="bg-white dark:bg-slate-950 min-h-screen overflow-hidden relative" onMouseMove={handleMouseMove}>
             {/* New Cinematic Background (Layers 1 & 2) */}
             <motion.div style={{ opacity: heroOpacity }}>
                 <FloatingHeroBackground mouseX={bgX} mouseY={bgY} />
@@ -103,11 +103,11 @@ const Landing = () => {
             </motion.section>
 
             {/* Features Section */}
-            <section className="py-24 bg-white relative">
+            <section className="py-24 bg-white dark:bg-slate-950 relative">
                 <div className="max-w-7xl mx-auto px-4 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-4">Why HomeSync AI?</h2>
-                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                        <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">Why HomeSync AI?</h2>
+                        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                             We've reinvented the home search process combining cutting-edge machine learning with human-centric design.
                         </p>
                     </div>
@@ -115,39 +115,39 @@ const Landing = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="bg-slate-50 p-8 rounded-3xl border border-slate-100 hover:shadow-xl hover:shadow-primary-500/10 transition-all"
+                            className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 hover:shadow-xl hover:shadow-primary-500/10 transition-all"
                         >
-                            <div className="w-14 h-14 bg-primary-100 text-primary-600 rounded-2xl flex items-center justify-center mb-6">
+                            <div className="w-14 h-14 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-2xl flex items-center justify-center mb-6">
                                 <Target size={28} />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">Hyper-Personalized Matching</h3>
-                            <p className="text-slate-600 leading-relaxed">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Hyper-Personalized Matching</h3>
+                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                                 Our dynamic algorithm scores every property based on your unique lifestyle, budget, and commute preferences.
                             </p>
                         </motion.div>
 
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="bg-slate-50 p-8 rounded-3xl border border-slate-100 hover:shadow-xl hover:shadow-accent-500/10 transition-all"
+                            className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 hover:shadow-xl hover:shadow-accent-500/10 transition-all"
                         >
-                            <div className="w-14 h-14 bg-accent-100 text-accent-600 rounded-2xl flex items-center justify-center mb-6">
+                            <div className="w-14 h-14 bg-accent-100 dark:bg-accent-900/30 text-accent-600 dark:text-accent-400 rounded-2xl flex items-center justify-center mb-6">
                                 <Map size={28} />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">Geospatial Insights</h3>
-                            <p className="text-slate-600 leading-relaxed">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Geospatial Insights</h3>
+                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                                 Draw a radius around your target area and see exactly what's available within your preferred commuting zones.
                             </p>
                         </motion.div>
 
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="bg-slate-50 p-8 rounded-3xl border border-slate-100 hover:shadow-xl hover:shadow-green-500/10 transition-all"
+                            className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 hover:shadow-xl hover:shadow-green-500/10 transition-all"
                         >
-                            <div className="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mb-6">
+                            <div className="w-14 h-14 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-2xl flex items-center justify-center mb-6">
                                 <ShieldCheck size={28} />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">Smart Price Evaluation</h3>
-                            <p className="text-slate-600 leading-relaxed">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Smart Price Evaluation</h3>
+                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                                 Know instantly if a house is overpriced or a great deal with our real-time ML market pricing models.
                             </p>
                         </motion.div>

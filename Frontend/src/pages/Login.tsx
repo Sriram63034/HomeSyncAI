@@ -38,11 +38,11 @@ const Login = () => {
     const isFormValid = email.includes('@') && password.length > 0;
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden transition-colors">
             {/* Background decoration */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-200/40 rounded-full blur-3xl" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent-200/40 rounded-full blur-3xl" />
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-200/40 dark:bg-primary-900/20 rounded-full blur-3xl" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent-200/40 dark:bg-accent-900/20 rounded-full blur-3xl" />
             </div>
 
             <motion.div
@@ -56,14 +56,14 @@ const Login = () => {
                         <Home size={32} />
                     </Link>
                 </div>
-                <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 mb-2">
+                <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
                     Welcome back
                 </h2>
-                <p className="text-center text-sm text-slate-600 mb-8">
+                <p className="text-center text-sm text-slate-600 dark:text-slate-400 mb-8">
                     Sign in to access your personalized house recommendations
                 </p>
 
-                <div className="glass rounded-2xl p-8 shadow-xl border border-white/40">
+                <div className="glass dark:glass-dark rounded-2xl p-8 shadow-xl border border-white/40 dark:border-slate-800">
                     <form className="space-y-2" onSubmit={handleSubmit}>
                         <Input
                             label="Email address"
@@ -90,9 +90,9 @@ const Login = () => {
                                     id="remember-me"
                                     name="remember-me"
                                     type="checkbox"
-                                    className="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-600 transition-colors"
+                                    className="h-4 w-4 rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-primary-600 focus:ring-primary-600 transition-colors"
                                 />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-700">
+                                <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-700 dark:text-slate-300">
                                     Remember me
                                 </label>
                             </div>
@@ -115,7 +115,7 @@ const Login = () => {
                         </Button>
                     </form>
 
-                    <div className="mt-6 text-center text-sm text-slate-600">
+                    <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
                         Don't have an account?{' '}
                         <Link to="/signup" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
                             Sign up

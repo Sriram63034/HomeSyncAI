@@ -20,7 +20,7 @@ export const AIScoreRing = ({ score, size = 64 }: AIScoreRingProps) => {
             {/* Background Ring */}
             <svg className="absolute top-0 flex items-center justify-center -rotate-90 pointer-events-none" width={size} height={size}>
                 <circle
-                    className="text-slate-100"
+                    className="text-slate-100 dark:text-slate-800"
                     strokeWidth={strokeWidth}
                     stroke="currentColor"
                     fill="transparent"
@@ -45,7 +45,7 @@ export const AIScoreRing = ({ score, size = 64 }: AIScoreRingProps) => {
                 />
             </svg>
             {/* Score Text */}
-            <span className="absolute font-bold text-slate-900" style={{ fontSize: size * 0.3 }}>
+            <span className="absolute font-bold text-slate-900 dark:text-white" style={{ fontSize: size * 0.3 }}>
                 {score}
             </span>
             {/* Glow */}

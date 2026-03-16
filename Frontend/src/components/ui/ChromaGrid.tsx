@@ -100,7 +100,7 @@ const ChromaCard = ({
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onClick={handleCardClick}
-                className="relative flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group"
+                className="relative flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group"
             >
                 {/* Spotlight effect */}
                 <div
@@ -132,8 +132,8 @@ const ChromaCard = ({
                         />
                         
                         {item.tag && (
-                            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-900 shadow-sm border border-white/50 flex items-center gap-1 z-20">
-                                <CheckCircle2 size={12} className="text-primary-600" /> {item.tag}
+                            <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-900 dark:text-slate-100 shadow-sm border border-white/50 dark:border-slate-700/50 flex items-center gap-1 z-20">
+                                <CheckCircle2 size={12} className="text-primary-600 dark:text-primary-400" /> {item.tag}
                             </div>
                         )}
 
@@ -144,7 +144,7 @@ const ChromaCard = ({
                                     e.stopPropagation();
                                     onToggleSave(item.id);
                                 }}
-                                className="save-button absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-white/50 text-slate-400 hover:text-red-500 transition-colors z-20 hover:scale-110"
+                                className="save-button absolute top-4 right-4 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-full shadow-sm border border-white/50 dark:border-slate-700/50 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 transition-colors z-20 hover:scale-110"
                             >
                                 <Heart
                                     size={18}
@@ -154,30 +154,30 @@ const ChromaCard = ({
                         )}
                     </div>
 
-                    <div className="flex flex-col flex-grow p-5 z-20 bg-white">
+                    <div className="flex flex-col flex-grow p-5 z-20 bg-white dark:bg-slate-900">
                         <div className="flex justify-between items-start mb-3">
                             <div>
-                                <h3 className="font-bold text-lg text-slate-900 line-clamp-1 group-hover:text-primary-600 transition-colors">
+                                <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100 line-clamp-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                                     {item.title}
                                 </h3>
-                                <p className="text-slate-500 text-sm line-clamp-1">{item.subtitle}</p>
+                                <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-1">{item.subtitle}</p>
                             </div>
-                            <div className="-mt-12 -mr-2 bg-white rounded-full p-1 shadow-md shrink-0">
+                            <div className="-mt-12 -mr-2 bg-white dark:bg-slate-900 rounded-full p-1 shadow-md shrink-0">
                                 <AIScoreRing score={item.score} size={50} />
                             </div>
                         </div>
 
-                        <div className="flex gap-4 text-sm text-slate-600 mb-6">
+                        <div className="flex gap-4 text-sm text-slate-600 dark:text-slate-400 mb-6">
                             {item.beds !== undefined && <span><strong>{item.beds}</strong> Beds</span>}
                             {item.baths !== undefined && <span><strong>{item.baths}</strong> Baths</span>}
                             {item.area !== undefined && <span><strong>{item.area}</strong> sqft</span>}
                         </div>
 
-                        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
-                            <span className="text-2xl font-bold tracking-tight text-slate-900">
+                        <div className="mt-auto flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+                            <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                                 {item.priceStr}
                             </span>
-                            <div className="font-semibold text-primary-600 text-sm group-hover:underline">
+                            <div className="font-semibold text-primary-600 dark:text-primary-400 text-sm group-hover:underline">
                                 View Details  →
                             </div>
                         </div>

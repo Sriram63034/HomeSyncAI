@@ -44,7 +44,7 @@ export const AgentContactModal: React.FC<AgentContactModalProps> = ({ isOpen, on
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-auto border border-slate-100 relative"
+                            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden pointer-events-auto border border-slate-100 dark:border-slate-800 relative"
                         >
                             {/* Close Button */}
                             <button
@@ -55,7 +55,7 @@ export const AgentContactModal: React.FC<AgentContactModalProps> = ({ isOpen, on
                             </button>
 
                             {/* Header / Avatar */}
-                            <div className="bg-slate-50 p-8 pb-6 flex flex-col items-center border-b border-slate-100">
+                            <div className="bg-slate-50 dark:bg-slate-800 p-8 pb-6 flex flex-col items-center border-b border-slate-100 dark:border-slate-800">
                                 <div className="w-24 h-24 rounded-full bg-primary-100 flex items-center justify-center mb-4 overflow-hidden border-4 border-white shadow-md">
                                     {agentData.photoUrl ? (
                                         <img src={agentData.photoUrl} alt={agentData.name} className="w-full h-full object-cover" />
@@ -63,8 +63,8 @@ export const AgentContactModal: React.FC<AgentContactModalProps> = ({ isOpen, on
                                         <User size={40} className="text-primary-500" />
                                     )}
                                 </div>
-                                <h2 className="text-2xl font-bold text-slate-900 text-center">{agentData.name}</h2>
-                                <p className="text-sm text-slate-500 font-medium flex items-center gap-1 mt-1">
+                                <h2 className="text-2xl font-bold text-slate-900 dark:text-white text-center">{agentData.name}</h2>
+                                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1 mt-1">
                                     <Building size={14} /> {agentData.agency}
                                 </p>
                             </div>
@@ -72,22 +72,22 @@ export const AgentContactModal: React.FC<AgentContactModalProps> = ({ isOpen, on
                             {/* Details & Actions */}
                             <div className="p-6 space-y-6">
                                 <div className="space-y-4">
-                                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 border border-slate-100">
+                                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                                         <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                                             <Phone size={18} />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-slate-500 font-medium tracking-wide uppercase">Phone</p>
-                                            <p className="text-slate-900 font-semibold">{agentData.phone}</p>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase">Phone</p>
+                                            <p className="text-slate-900 dark:text-white font-semibold">{agentData.phone}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 border border-slate-100">
+                                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                                         <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                                             <Mail size={18} />
                                         </div>
                                         <div className="overflow-hidden">
-                                            <p className="text-xs text-slate-500 font-medium tracking-wide uppercase">Email</p>
-                                            <p className="text-slate-900 font-semibold truncate">
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase">Email</p>
+                                            <p className="text-slate-900 dark:text-white font-semibold truncate">
                                                 <a href={`mailto:${agentData.email}`} className="hover:text-blue-600 transition-colors">
                                                     {agentData.email}
                                                 </a>

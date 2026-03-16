@@ -73,7 +73,7 @@ export const Slider = ({ min, max, step = 1, value, onChange, formatValue, class
         <div className={cn("w-full py-6 relative select-none", className)}>
             <div
                 ref={containerRef}
-                className="h-2 bg-slate-200 rounded-full relative cursor-pointer"
+                className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full relative cursor-pointer"
                 onClick={(e) => {
                     // Simple click to nearest handle
                     if (isDragging) return;
@@ -99,7 +99,7 @@ export const Slider = ({ min, max, step = 1, value, onChange, formatValue, class
                 {/* Min Handle */}
                 <motion.div
                     animate={isDragging === 'min' ? { scale: 1.2 } : { scale: 1 }}
-                    className="absolute top-1/2 -mt-3.5 -ml-3.5 w-7 h-7 bg-white border-2 border-primary-500 rounded-full shadow hover:scale-110 cursor-grab active:cursor-grabbing z-10 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
+                    className="absolute top-1/2 -mt-3.5 -ml-3.5 w-7 h-7 bg-white dark:bg-slate-900 border-2 border-primary-500 rounded-full shadow hover:scale-110 cursor-grab active:cursor-grabbing z-10 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
                     style={{ left: `${minPos}%` }}
                     onPointerDown={(e) => {
                         e.stopPropagation();
@@ -111,7 +111,7 @@ export const Slider = ({ min, max, step = 1, value, onChange, formatValue, class
                 {/* Max Handle */}
                 <motion.div
                     animate={isDragging === 'max' ? { scale: 1.2 } : { scale: 1 }}
-                    className="absolute top-1/2 -mt-3.5 -ml-3.5 w-7 h-7 bg-white border-2 border-primary-500 rounded-full shadow hover:scale-110 cursor-grab active:cursor-grabbing z-10 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
+                    className="absolute top-1/2 -mt-3.5 -ml-3.5 w-7 h-7 bg-white dark:bg-slate-900 border-2 border-primary-500 rounded-full shadow hover:scale-110 cursor-grab active:cursor-grabbing z-10 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
                     style={{ left: `${maxPos}%` }}
                     onPointerDown={(e) => {
                         e.stopPropagation();
@@ -122,7 +122,7 @@ export const Slider = ({ min, max, step = 1, value, onChange, formatValue, class
             </div>
 
             {/* Values Display */}
-            <div className="flex justify-between mt-4 text-sm font-medium text-slate-600">
+            <div className="flex justify-between mt-4 text-sm font-medium text-slate-600 dark:text-slate-400">
                 <span>{formatValue ? formatValue(value[0]) : value[0]}</span>
                 <span>{formatValue ? formatValue(value[1]) : value[1]}</span>
             </div>

@@ -77,15 +77,15 @@ const Saved = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pt-24 pb-24">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 pb-24 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 lg:px-8">
-                <h1 className="text-3xl font-bold text-slate-900 mb-2">Saved Homes</h1>
-                <p className="text-slate-500 mb-8">Review and compare your favorite properties.</p>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Saved Homes</h1>
+                <p className="text-slate-500 dark:text-slate-400 mb-8">Review and compare your favorite properties.</p>
 
                 {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 h-[400px] flex flex-col">
+                            <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 h-[400px] flex flex-col">
                                 <Skeleton className="h-48 w-full rounded-xl mb-4" />
                                 <Skeleton className="h-6 w-3/4 mb-2" />
                                 <Skeleton className="h-4 w-1/2" />
@@ -93,22 +93,22 @@ const Saved = () => {
                         ))}
                     </div>
                 ) : error ? (
-                    <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-2xl mx-auto">
+                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm max-w-2xl mx-auto">
                         <div className="text-red-500 mb-4 text-lg font-semibold">Error Loading Saved Homes</div>
-                        <p className="text-slate-500 mb-8">{error}</p>
+                        <p className="text-slate-500 dark:text-slate-400 mb-8">{error}</p>
                         <Button onClick={fetchSavedHouses} variant="primary">Try Again</Button>
                     </div>
                 ) : savedHouses.length === 0 ? (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white rounded-3xl border border-slate-200 p-12 text-center max-w-2xl mx-auto mt-12 shadow-sm"
+                        className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-12 text-center max-w-2xl mx-auto mt-12 shadow-sm"
                     >
-                        <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <HeartOff size={40} className="text-slate-400" />
+                        <div className="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <HeartOff size={40} className="text-slate-400 dark:text-slate-500" />
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-900 mb-4">No saved homes yet</h2>
-                        <p className="text-slate-600 mb-8">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">No saved homes yet</h2>
+                        <p className="text-slate-600 dark:text-slate-400 mb-8">
                             Explore your personalized AI recommendations and save the ones you love to compare them later.
                         </p>
                         <Link to="/results">

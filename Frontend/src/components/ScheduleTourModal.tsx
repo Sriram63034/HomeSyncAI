@@ -94,7 +94,7 @@ export const ScheduleTourModal: React.FC<ScheduleTourModalProps> = ({ isOpen, on
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-auto border border-slate-100 relative"
+                            className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden pointer-events-auto border border-slate-100 dark:border-slate-800 relative"
                         >
                             {/* Close Button */}
                             {!success && (
@@ -112,25 +112,25 @@ export const ScheduleTourModal: React.FC<ScheduleTourModalProps> = ({ isOpen, on
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
                                         transition={{ type: 'spring', damping: 15 }}
-                                        className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-2 shadow-inner"
+                                        className="w-20 h-20 bg-green-100 dark:bg-green-900/30 text-green-500 rounded-full flex items-center justify-center mb-2 shadow-inner"
                                     >
                                         <CheckCircle size={40} />
                                     </motion.div>
-                                    <h2 className="text-2xl font-bold text-slate-900">Tour Scheduled!</h2>
-                                    <p className="text-slate-600">Your property tour for {date} at {time} has been scheduled successfully. The agent will contact you soon.</p>
+                                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Tour Scheduled!</h2>
+                                    <p className="text-slate-600 dark:text-slate-400">Your property tour for {date} at {time} has been scheduled successfully. The agent will contact you soon.</p>
                                 </div>
                             ) : (
                                 <>
-                                    <div className="bg-slate-50 p-6 border-b border-slate-100">
-                                        <h2 className="text-2xl font-bold text-slate-900">Schedule a Tour</h2>
-                                        <p className="text-sm text-slate-500 mt-1">Select a date and time that works for you.</p>
+                                    <div className="bg-slate-50 dark:bg-slate-800 p-6 border-b border-slate-100 dark:border-slate-800">
+                                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Schedule a Tour</h2>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Select a date and time that works for you.</p>
                                     </div>
 
                                     <form onSubmit={handleSubmit} className="p-6 space-y-6">
                                         {/* Date and Time Selection */}
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-semibold text-slate-700 block">Date</label>
+                                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">Date</label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                                                         <Calendar size={18} className="text-slate-400" />
@@ -144,13 +144,13 @@ export const ScheduleTourModal: React.FC<ScheduleTourModalProps> = ({ isOpen, on
                                                             setTime(''); // Reset time when date changes
                                                         }}
                                                         min={new Date().toISOString().split('T')[0]}
-                                                        className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700"
+                                                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700 dark:text-white"
                                                     />
                                                 </div>
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-sm font-semibold text-slate-700 block">Time Slot</label>
+                                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">Time Slot</label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                                                         <Clock size={18} className="text-slate-400" />
@@ -159,7 +159,7 @@ export const ScheduleTourModal: React.FC<ScheduleTourModalProps> = ({ isOpen, on
                                                         required
                                                         value={time}
                                                         onChange={(e) => setTime(e.target.value)}
-                                                        className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700 appearance-none"
+                                                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700 dark:text-white appearance-none"
                                                     >
                                                         <option value="" disabled>Select a time</option>
                                                         {TIME_SLOTS.map((slot) => {
@@ -176,8 +176,8 @@ export const ScheduleTourModal: React.FC<ScheduleTourModalProps> = ({ isOpen, on
                                         </div>
 
                                         {/* Contact Details */}
-                                        <div className="space-y-4 pt-2 border-t border-slate-100">
-                                            <h3 className="text-sm font-semibold text-slate-900">Your Details</h3>
+                                        <div className="space-y-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+                                            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Your Details</h3>
                                             
                                             <div className="relative">
                                                 <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -189,7 +189,7 @@ export const ScheduleTourModal: React.FC<ScheduleTourModalProps> = ({ isOpen, on
                                                     required
                                                     value={name}
                                                     onChange={(e) => setName(e.target.value)}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700 dark:text-white"
                                                 />
                                             </div>
 
@@ -203,7 +203,7 @@ export const ScheduleTourModal: React.FC<ScheduleTourModalProps> = ({ isOpen, on
                                                     required
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700 dark:text-white"
                                                 />
                                             </div>
 
@@ -217,7 +217,7 @@ export const ScheduleTourModal: React.FC<ScheduleTourModalProps> = ({ isOpen, on
                                                     required
                                                     value={phone}
                                                     onChange={(e) => setPhone(e.target.value)}
-                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700"
+                                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-slate-700 dark:text-white"
                                                 />
                                             </div>
                                         </div>
