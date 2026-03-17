@@ -62,10 +62,12 @@ const ChromaCard = ({
 
     const handleMouseEnter = () => {
         setOpacity(1);
+        window.dispatchEvent(new CustomEvent('splash-cursor-toggle', { detail: { active: false } }));
     };
 
     const handleMouseLeave = () => {
         setOpacity(0);
+        window.dispatchEvent(new CustomEvent('splash-cursor-toggle', { detail: { active: true } }));
     };
 
     const handleCardClick = (e: React.MouseEvent) => {
@@ -100,7 +102,7 @@ const ChromaCard = ({
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onClick={handleCardClick}
-                className="relative flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group"
+                className="relative flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group property-card"
             >
                 {/* Spotlight effect */}
                 <div
@@ -128,6 +130,7 @@ const ChromaCard = ({
                         <img
                             src={item.image}
                             alt={item.title}
+                            loading="lazy"
                             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         

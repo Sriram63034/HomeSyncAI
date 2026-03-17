@@ -57,10 +57,23 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
-        <SplashCursor 
-        SIM_RESOLUTION={128}
-        DYE_RESOLUTION={1024}
-        SPLAT_RADIUS={0.25}
+        <AppContent />
+      </Router>
+    </ThemeProvider>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+  const isResultsPage = location.pathname === '/results';
+
+  return (
+    <>
+      <SplashCursor 
+        SIM_RESOLUTION={isResultsPage ? 64 : 128}
+        DYE_RESOLUTION={isResultsPage ? 512 : 1024}
+        PRESSURE_ITERATIONS={isResultsPage ? 10 : 20}
+        SPLAT_RADIUS={isResultsPage ? 0.2 : 0.25}
         SPLAT_FORCE={5000}
         COLOR_UPDATE_SPEED={8}
         TRANSPARENT={true}
@@ -72,8 +85,7 @@ function App() {
         </main>
         <Footer />
       </div>
-      </Router>
-    </ThemeProvider>
+    </>
   );
 }
 
