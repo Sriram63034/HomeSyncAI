@@ -91,33 +91,24 @@ Database (SQLite)
 
 ## 📂 Project Structure
 HomeSyncAI/
-
 │
-
 ├── frontend/ # React + TypeScript application
-
-│ ├── components/
-
-│ ├── pages/
-
-│ └── services/
-
+│ ├── components/ # Reusable UI components
+│ ├── pages/ # Application pages (Login, Signup, etc.)
+│ ├── services/ # API calls and utilities
+│ ├── App.tsx
+│ └── index.css
 │
-
 ├── backend/ # Django backend
-
-│ ├── models/ # Database schema
-
+│ ├── models/ # Database models
 │ ├── views/ # API endpoints
-
-│ ├── serializers/ # Data transformation
-
+│ ├── serializers/ # Data conversion (JSON)
 │ ├── urls/ # Routing
-
+│ ├── manage.py
 │
-
-└── db.sqlite3 # Database file
-
+├── db.sqlite3 # Database file
+├── package.json
+└── README.md
 ## Running backend
 cd backend
 pip install -r requirements.txt
