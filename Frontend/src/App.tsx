@@ -70,11 +70,11 @@ function AppContent() {
   return (
     <>
       <SplashCursor 
-        SIM_RESOLUTION={isResultsPage ? 64 : 128}
+        SIM_RESOLUTION={isResultsPage ? 64 : 108}
         DYE_RESOLUTION={isResultsPage ? 512 : 1024}
         PRESSURE_ITERATIONS={isResultsPage ? 10 : 20}
         SPLAT_RADIUS={isResultsPage ? 0.2 : 0.25}
-        SPLAT_FORCE={5000}
+        SPLAT_FORCE={3000}
         COLOR_UPDATE_SPEED={8}
         TRANSPARENT={true}
       />

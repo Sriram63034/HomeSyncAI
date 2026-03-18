@@ -1,0 +1,1 @@
+web: gunicorn homesync_backend.wsgi:application
