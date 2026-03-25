@@ -12,10 +12,11 @@ from core.utils import StandardResultsSetPagination
 from . import generate_houses
 
 
-# 🔥 RUN SCRIPT (to insert data into PostgreSQL)
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
 def run_script(request):
     generate_houses.main()
-    return HttpResponse("✅ Data inserted successfully!")
+    return Response({"message": "✅ Data inserted successfully!"})
 
 
 # 🔥 GET ALL CITIES (PUBLIC)
