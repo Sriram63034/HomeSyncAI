@@ -26,7 +26,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+
 
 
 # Application definition
@@ -134,7 +137,22 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 AUTH_USER_MODEL = "accounts.User"
 
 # CORS Setup
-CORS_ALLOW_ALL_ORIGINS = True  # Allows all origins for development. For production, specify origins.
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://homesyncai.vercel.app",  # Placeholder: User to update with actual domain
+]
+
+# Add any additional origins from environment variables
+extra_origins = os.getenv("CORS_ALLOWED_ORIGINS")
+if extra_origins:
+    CORS_ALLOWED_ORIGINS.extend(extra_origins.split(","))
+
+if not DEBUG:
+    # Ensure no empty strings in the list
+    CORS_ALLOWED_ORIGINS = [origin for origin in CORS_ALLOWED_ORIGINS if origin]
+
 
 # Django REST Framework Settings
 REST_FRAMEWORK = {
